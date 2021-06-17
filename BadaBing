@@ -1,0 +1,152 @@
+#!/usr/bin/env python3
+
+# https://github.com/helloSystem/Menu/issues/3
+
+
+from PyQt5.QtWidgets import QApplication, QSystemTrayIcon, QMenu, QAction, QHBoxLayout, QGroupBox, QSlider, QWidget, \
+    QActionGroup, QDesktopWidget, QMessageBox
+from PyQt5.QtGui import QIcon, QPixmap, QCursor
+from PyQt5.QtCore import Qt, QProcess, QMetaObject, QCoreApplication, QEvent, QObject, QTimer
+import sys, os
+import datetime
+import json
+import requests
+
+        
+        
+class BadaBingMenu(QObject):
+
+    def __init__(self):
+
+        super().__init__()
+
+        icon = QIcon(os.path.dirname(__file__) + '/Resources/BadaBing.png')
+
+        self.tray = QSystemTrayIcon()
+        self.tray.setIcon(icon)
+        self.tray.setVisible(True)
+        self.menu = QMenu()
+        
+        self.tray.activated.connect(self.onClicked) # Refresh each time the menu is clicked. FIXME: Does not work on right-click; why?
+
+        self.tray.setContextMenu(self.menu)
+        
+        # NOTE:
+        # https://forum.learnpyqt.com/t/qsystemtrayicon-example/689
+        # Sneaky PyQt quirk! A reference to the actions must be kept around or the actions will be destroyed
+        self.actions = []
+        self.sliderWindow = None
+        
+        self.refreshMenu() # Initially populate the menu
+        self.tray.installEventFilter(self) # FIXME: This never seems to get called, why?
+        self.installEventFilter(self)  # FIXME: This never seems to get called, why?
+
+    def eventFilter(self, obj, event):
+        print("eventFilter function running") # FIXME: Why is this never called when the icon is right-clicked?
+        # We need to refresh the contents of the right-click menu somehow when the user right-clicks...
+
+    def onClicked(self, reason):
+        # TODO: Is using customContextMenuRequested the proper way to do this? How?
+        self.refreshMenu()
+        # S = Ui_Slider()
+        # self.sliderWindow = S # Need to keep a reference around so that it does not get destroyed
+        # S.show()
+
+    def refreshMenu(self):
+        self.actions = []
+        self.menu.clear()
+        
+        # Add the devices to the menu
+        # Playback devices
+        self.playbackGroup = QActionGroup(self.menu) # Only one of the actions added to this group can be active
+
+
+        self.menu.addSeparator()
+
+        action = QAction("Gallery")
+        action.triggered.connect(self.showGallery)
+        self.actions.append(action)
+        self.menu.addAction(action)
+
+        action = QAction("Preferences")
+        action.triggered.connect(self.showPreferences)
+        self.actions.append(action)
+        self.menu.addAction(action)
+
+        action = QAction("Download")
+        action.triggered.connect(self.showDownload)
+        self.actions.append(action)
+        self.menu.addAction(action)
+
+        action = QAction("About")
+        action.triggered.connect(self.showAbout)
+        self.actions.append(action)
+        self.menu.addAction(action)
+
+        self.menu.addSeparator()
+        action = QAction("Exit")
+        action.triggered.connect(self.exit)
+        self.actions.append(action)
+        self.menu.addAction(action)
+
+    def exit(self, widget):
+        sys.exit()
+
+    # show cache contents
+    def showGallery(self):
+        pass
+
+    # set preferences
+    def showPreferences(self):
+        pass
+
+    # download latest image cache
+    def showDownload(self):
+        response = requests.get("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US")
+        image_data = json.loads(response.text)
+
+        image_url = image_data["images"][0]["url"]
+        image_url = image_url.split("&")[0]
+        full_image_url = "https://www.bing.com" + image_url
+        img_data = requests.get(full_image_url).content
+        with open("/usr/home/darko/Pictures/badabing.jpeg", 'wb') as handler:
+            handler.write(img_data)
+
+        os.system("./Resources/copy.sh /usr/home/darko/Pictures/badabing.jpeg 1368 768")
+
+        # at this point we need to tell the dsktop there is a new background
+        os.system("launch Filer --set-wallpaper /usr/home/darko/Pictures/badabing.jpeg")
+
+    def showAbout(self):
+        print("showDialog")
+        msg = QMessageBox()
+        msg.setWindowTitle("BadaBing")
+        msg.setIconPixmap(QPixmap(os.path.dirname(__file__) + "/Resources/BadaBing.png").scaledToWidth(64, Qt.SmoothTransformation))
+        candidates = ["COPYRIGHT", "COPYING", "LICENSE", "license.md"]
+        for candidate in candidates:
+            if os.path.exists(os.path.dirname(__file__) + "/" + candidate):
+                with open(os.path.dirname(__file__) + "/" + candidate, 'r') as file:
+                    data = file.read()
+                msg.setDetailedText(data)
+        msg.setText("<h3>BadaBing</h3>")
+        msg.setInformativeText("Utility to download daily desktop images from <a href='https://bing.wallpaper.pics/'>https://bing.wallpaper.pics/</a>")
+        msg.exec()
+
+
+if __name__ == "__main__":
+
+    # Simple singleton:
+    # Ensure that only one instance of this application is running by trying to kill the other ones
+    p = QProcess()
+    p.setProgram("pkill")
+    p.setArguments(["-f", os.path.abspath(__file__)])
+    cmd = p.program() + " " + " ".join(p.arguments())
+    print(cmd)
+    p.start()
+    p.waitForFinished()
+
+    app = QApplication(sys.argv)
+    app.setQuitOnLastWindowClosed(False)
+    app.setAttribute(Qt.AA_UseHighDpiPixmaps)
+    VM = BadaBingMenu()
+    sys.exit(app.exec_())
