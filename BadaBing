@@ -108,6 +108,20 @@ class BadaBingMenu(QObject):
         image_data = json.loads(response.text)
 
         image_url = image_data["images"][0]["url"]
+        # remove the /th?id=OHR.
+        urlbase = image_data["images"][0]["urlbase"][11:]
+        title = image_data["images"][0]["title"]
+        copyright = image_data["images"][0]["copyright"]
+
+        print("--------------------------------")
+        print(urlbase)
+        print("--------------------------------")
+        print(title)
+        print("--------------------------------")
+        print(copyright)
+        print("--------------------------------")
+        exit(0)
+
         image_url = image_url.split("&")[0]
         full_image_url = "https://www.bing.com" + image_url
         img_data = requests.get(full_image_url).content
@@ -116,7 +130,9 @@ class BadaBingMenu(QObject):
             f.write(img_data)
 
         cwd = os.getcwd()
-        os.system(f'{cwd}/Resources/bake-assets.sh {home} {home}/Pictures/badabing.jpeg')
+        print(f'cwd = {cwd}')
+        # os.system(f'{cwd}/Resources/bake-assets.sh {home}/Pictures/badabing.jpeg 1368 768')
+        os.system(f'{cwd}/Resources/bake-assets.sh {home}/Pictures/badabing.jpeg')
 
     def dbgMessage(self, txt):
         msg = QMessageBox()

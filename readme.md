@@ -59,25 +59,3 @@ Screen lock will be a prefrence: none | metalock | catlock
     [terms](https://community.icons8.com/t/can-i-use-icons8-for-free/30)
 
 
-### old look & feel
-    Usage:
-    BadaBing.app
-
-    Help Options:
-    -h, --help          Show help options
-
-    Application Options:
-    --schedule=INT      Run scheduled
-    --display           Display the gui
-    --update            Update the wallpaper
-    --force             Force overwwrite
-    --list              List cache content
-    --locale=STRING     Locale
-    --auto              Auto start
-    --height            Screen height
-    --width             Screen width
-
-![Screenshot](https://github.com/darkoverlordofdata/badabing/raw/master/Screenshot1.png "Screenshot")
-
-![Screenshot](https://github.com/darkoverlordofdata/badabing/raw/master/Screenshot2.png "Screenshot")
-
