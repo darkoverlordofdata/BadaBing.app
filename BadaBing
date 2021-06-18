@@ -102,6 +102,8 @@ class BadaBingMenu(QObject):
 
     # download latest image cache
     def showDownload(self):
+        home = os.getenv('HOME')
+
         response = requests.get("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US")
         image_data = json.loads(response.text)
 
@@ -109,13 +111,24 @@ class BadaBingMenu(QObject):
         image_url = image_url.split("&")[0]
         full_image_url = "https://www.bing.com" + image_url
         img_data = requests.get(full_image_url).content
-        with open("/usr/home/darko/Pictures/badabing.jpeg", 'wb') as handler:
-            handler.write(img_data)
 
-        os.system("./Resources/copy.sh /usr/home/darko/Pictures/badabing.jpeg 1368 768")
+        with open(f'{home}/Pictures/badabing.jpeg', 'wb') as f:
+            f.write(img_data)
 
-        # at this point we need to tell the dsktop there is a new background
-        os.system("launch Filer --set-wallpaper /usr/home/darko/Pictures/badabing.jpeg")
+        cwd = os.getcwd()
+        os.system(f'{cwd}/Resources/bake-assets.sh {home} {home}/Pictures/badabing.jpeg')
+
+    def dbgMessage(self, txt):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+
+        msg.setText(txt)
+        msg.setInformativeText("value")
+        msg.setWindowTitle("BadaBing Debug")
+        msg.setDetailedText("The details are as follows:")
+        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        retval = msg.exec_()
+
 
     def showAbout(self):
         print("showDialog")

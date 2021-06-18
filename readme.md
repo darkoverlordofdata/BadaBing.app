@@ -17,6 +17,7 @@ Screen lock will be a prefrence: none | metalock | catlock
 
     pyqt5
     libappindicator
+    ImageMagick
 
 ### features
 
