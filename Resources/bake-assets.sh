@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 #  $1 - chached background jpg 
+#  $2 - title information
 #
 #	Copy & resize the wallpaper to fit on the device
 #
@@ -10,6 +11,8 @@ res=$(xwininfo -root | grep 'geometry' | awk '{print $2;}')
 wxh=$(echo $res | cut -f1 -d+)
 width=$(echo $wxh | cut -f1 -dx)
 height=$(echo $wxh | cut -f2 -dx)
+
+cp -f $2 ~/.local/share/catlock/themes/wallpaper.info
 
 convert $1 -resize ${width}x$height\! ~/.local/share/catlock/themes/wallpaper.locked.jpg
 #

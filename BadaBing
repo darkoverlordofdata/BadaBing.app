@@ -11,6 +11,7 @@ import sys, os
 import datetime
 import json
 import requests
+from pathlib import Path
 
         
         
@@ -102,37 +103,35 @@ class BadaBingMenu(QObject):
 
     # download latest image cache
     def showDownload(self):
-        home = os.getenv('HOME')
 
         response = requests.get("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US")
         image_data = json.loads(response.text)
 
         image_url = image_data["images"][0]["url"]
-        # remove the /th?id=OHR.
-        urlbase = image_data["images"][0]["urlbase"][11:]
+        
+        urlbase = image_data["images"][0]["urlbase"][11:] # remove /th?id=OHR.
         title = image_data["images"][0]["title"]
         copyright = image_data["images"][0]["copyright"]
-
-        print("--------------------------------")
-        print(urlbase)
-        print("--------------------------------")
-        print(title)
-        print("--------------------------------")
-        print(copyright)
-        print("--------------------------------")
-        exit(0)
 
         image_url = image_url.split("&")[0]
         full_image_url = "https://www.bing.com" + image_url
         img_data = requests.get(full_image_url).content
 
-        with open(f'{home}/Pictures/badabing.jpeg', 'wb') as f:
+        home = os.getenv('HOME')
+        Path(f'{home}/Wallpaper').mkdir(exist_ok=True)
+
+        with open(f'{home}/Wallpaper/{urlbase}.jpeg', 'wb') as f:
             f.write(img_data)
+
+        with open(f'{home}/Wallpaper/{urlbase}', 'w') as f:
+            f.write(title)
+            f.write('\n')
+            f.write(copyright)
+
 
         cwd = os.getcwd()
         print(f'cwd = {cwd}')
-        # os.system(f'{cwd}/Resources/bake-assets.sh {home}/Pictures/badabing.jpeg 1368 768')
-        os.system(f'{cwd}/Resources/bake-assets.sh {home}/Pictures/badabing.jpeg')
+        os.system(f'{cwd}/Resources/bake-assets.sh {home}/Wallpaper/{urlbase}.jpeg {home}/Wallpaper/{urlbase}')
 
     def dbgMessage(self, txt):
         msg = QMessageBox()
