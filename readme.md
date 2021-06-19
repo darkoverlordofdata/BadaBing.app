@@ -10,12 +10,10 @@
 
 https://github.com/darkoverlordofdata/badabing
 
-Rather than a traditional ui, this will focus on a system tray icon.
-Screen lock will be a prefrence: none | metalock | catlock
 
-![Screenshot](https://github.com/darkoverlordofdata/BadaBing.app/raw/master/assets/locked.png "Screenshot")
+![Screenshot](https://raw.githubusercontent.com/darkoverlordofdata/BadaBing.app/main/assets/locked.png "Screenshot")
 
-![Screenshot](https://github.com/darkoverlordofdata/BadaBing.app/raw/master/assets/authorize.png "Screenshot")
+![Screenshot](https://raw.githubusercontent.com/darkoverlordofdata/BadaBing.app/main/assets/authorize.png "Screenshot")
 
 ### dependancies
 
@@ -24,6 +22,10 @@ Screen lock will be a prefrence: none | metalock | catlock
     ImageMagick
 
 ### features
+
+Rather than a traditional ui, this will focus on a system tray icon.
+Screen lock will be a prefrence: none | metalock | catlock
+
 
     Enable automation by using gui to set preferences.
     General Preferences:
