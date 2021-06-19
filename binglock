@@ -21,6 +21,9 @@ class BingLock(QWidget):
         
         super().__init__()
         self.count = 0
+        # self.fontFamily = 'Arial'
+        self.fontFamily = 'Noto Sans'
+
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
         self.left = 0
         self.top = 0
@@ -54,11 +57,11 @@ class BingLock(QWidget):
         # self.textbox.hide()
         self.textbox.setVisible(False)
 
-        fnt_60 = QFont('Arial', 60, QFont.Normal)
-        fnt_30 = QFont('Arial', 30, QFont.Normal)
-        fnt_20 = QFont("Arial", 20, QFont.Normal)
-        fnt_12 = QFont("Arial", 12, QFont.Normal)
-        fnt_10 = QFont("Arial", 10, QFont.Normal)
+        fnt_60 = QFont(self.fontFamily, 60, QFont.Normal)
+        fnt_30 = QFont(self.fontFamily, 30, QFont.Normal)
+        fnt_20 = QFont(self.fontFamily, 20, QFont.Normal)
+        fnt_12 = QFont(self.fontFamily, 12, QFont.Normal)
+        fnt_10 = QFont(self.fontFamily, 10, QFont.Normal)
 
         self.titlebox = QLabel(self)
         self.titlebox.setFont(fnt_20)

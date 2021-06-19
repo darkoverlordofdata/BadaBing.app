@@ -13,6 +13,10 @@ https://github.com/darkoverlordofdata/badabing
 Rather than a traditional ui, this will focus on a system tray icon.
 Screen lock will be a prefrence: none | metalock | catlock
 
+![Screenshot](https://github.com/darkoverlordofdata/BadaBing.app/raw/master/assets/locked.png "Screenshot")
+
+![Screenshot](https://github.com/darkoverlordofdata/BadaBing.app/raw/master/assets/authorize.png "Screenshot")
+
 ### dependancies
 
     pyqt5
