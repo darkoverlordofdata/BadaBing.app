@@ -43,26 +43,29 @@ class BingLock(QWidget):
 
         self.textbox = QLineEdit(self)
         self.textbox.setEchoMode(QLineEdit.Password)
-        self.textbox.setFocusPolicy(Qt.StrongFocus)
+        # self.textbox.setFocusPolicy(Qt.StrongFocus)
+        
         # https://stackoverflow.com/questions/1247762/regex-for-all-printable-characters
         reg_ex = QRegExp("\P{Cc}\P{Cn}\P{Cs}")
         input_validator = QRegExpValidator(reg_ex, self.textbox)
         self.textbox.setValidator(input_validator)
         self.textbox.move((self.width*.5)-140, self.height*.8)
         self.textbox.resize(280,40)
-        self.textbox.hide()
+        # self.textbox.hide()
+        self.textbox.setVisible(False)
 
+        fnt_60 = QFont('Arial', 60, QFont.Normal)
+        fnt_30 = QFont('Arial', 30, QFont.Normal)
         fnt_20 = QFont("Arial", 20, QFont.Normal)
         fnt_12 = QFont("Arial", 12, QFont.Normal)
-        fnt_8 = QFont("Arial", 8, QFont.Normal)
-        fnt_80 = QFont('Arial', 60, QFont.Bold)
-        fnt_40 = QFont('Arial', 30, QFont.Bold)
+        fnt_10 = QFont("Arial", 10, QFont.Normal)
 
         self.titlebox = QLabel(self)
         self.titlebox.setFont(fnt_20)
         self.titlebox.setText(self.title)
         self.titlebox.move(60, 40)
         self.titlebox.setStyleSheet("color: white")
+        self.titlebox.setFocusPolicy(Qt.ClickFocus | Qt.TabFocus | Qt.NoFocus)
   
         self.infobox = QLabel(self)
         self.infobox.setFont(fnt_12)
@@ -71,25 +74,24 @@ class BingLock(QWidget):
         self.infobox.setStyleSheet("color: white")
 
         self.copybox = QLabel(self)
-        self.copybox.setFont(fnt_8)
+        self.copybox.setFont(fnt_10)
         self.copybox.setText(self.copyright[:-1])
         self.copybox.move(60, 110)
         self.copybox.setStyleSheet("color: white")
 
         self.clock = QLabel(self)
-        self.clock.setFont(fnt_80)
+        self.clock.setFont(fnt_60)
         self.clock.move(60, 530)
         self.clock.setStyleSheet("color: white")
 
-
         self.calendar = QLabel(self)        
-        self.calendar.setFont(fnt_40)
+        self.calendar.setFont(fnt_30)
         self.calendar.move(60, 650)
         self.calendar.setStyleSheet("color: white")
+
         self.showTime()
         self.clock.show()
         self.calendar.show()
-
 
         timer = QTimer(self)
         timer.timeout.connect(self.showTime)
@@ -98,24 +100,12 @@ class BingLock(QWidget):
         self.show()
 
     def showTime(self):
-        
         currentTime = QDateTime.currentDateTime()
-        adj = 60*60*3
-        currentTime = currentTime.addSecs(-adj)
+        adj = 60*60*-3 # 'cause i'm stuck in EDT
+        currentTime = currentTime.addSecs(adj)
 
         self.clock.setText(currentTime.toString('h:mm a'))
         self.calendar.setText(currentTime.toString('dddd, MMMM d'))
-
-
-    def showTime0(self):
-        
-        QDateTime.currentDateTime()
-        currentTime = QTime.currentTime()
-        adj = 60*60*3
-        currentTime = currentTime.addSecs(-adj)
-
-        displayTxt = currentTime.toString('hh:mm')
-        self.clock.setText(displayTxt)
 
     def keyPressEvent(self, event):
         """
@@ -139,7 +129,8 @@ class BingLock(QWidget):
             # else: 
             self.label.setPixmap(self.locked)
             self.textbox.setText("")
-            self.textbox.hide()
+            # self.textbox.hide()
+            self.textbox.setVisible(False)
 
         elif event.key() == Qt.Key_Return:
             if self.textbox.text() == pin:
@@ -147,12 +138,16 @@ class BingLock(QWidget):
             self.textbox.clear()
 
         elif event.key() == Qt.Key_Backspace:
-            self.textbox.setText(self.textbox.text()[:-1])
+            if self.textbox.hasFocus():
+                self.textbox.backspace()
+            else:
+                self.textbox.setText(self.textbox.text()[:-1])
 
         else:
             if self.textbox.isHidden():
                 self.label.setPixmap(self.authorize)
-                self.textbox.show()
+                self.textbox.setVisible(True)
+                # self.textbox.show()
                 self.textbox.setText(event.text())
             else:
                 if self.textbox.hasFocus():
