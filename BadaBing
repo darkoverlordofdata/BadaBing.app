@@ -5,7 +5,7 @@
 
 from PyQt5.QtWidgets import QApplication, QSystemTrayIcon, QMenu, QAction, QHBoxLayout, QGroupBox, QSlider, QWidget, \
     QActionGroup, QDesktopWidget, QMessageBox
-from PyQt5.QtGui import QIcon, QPixmap, QCursor
+from PyQt5.QtGui import QIcon, QPixmap, QCursor, QImage
 from PyQt5.QtCore import Qt, QProcess, QMetaObject, QCoreApplication, QEvent, QObject, QTimer
 import sys, os
 import datetime
@@ -117,21 +117,37 @@ class BadaBingMenu(QObject):
         full_image_url = "https://www.bing.com" + image_url
         img_data = requests.get(full_image_url).content
 
-        home = os.getenv('HOME')
-        Path(f'{home}/Wallpaper').mkdir(exist_ok=True)
+        with open(os.path.dirname(__file__) + '/Resources/imagename', 'w') as f:
+            f.write(urlbase)
 
-        with open(f'{home}/Wallpaper/{urlbase}.jpeg', 'wb') as f:
+        with open(os.path.dirname(__file__) + f'/Resources/gallery/{urlbase}.jpeg', 'wb') as f:
             f.write(img_data)
 
-        with open(f'{home}/Wallpaper/{urlbase}', 'w') as f:
+        with open(os.path.dirname(__file__) + f'/Resources/gallery/{urlbase}', 'w') as f:
             f.write(title)
             f.write('\n')
             f.write(copyright)
 
+        # replae with python code to create 2 files:
+        width = 1368
+        height = 768
 
-        cwd = os.getcwd()
-        print(f'cwd = {cwd}')
-        os.system(f'{cwd}/Resources/bake-assets.sh {home}/Wallpaper/{urlbase}.jpeg {home}/Wallpaper/{urlbase}')
+        image = QImage(os.path.dirname(__file__) + f'/Resources/gallery/{urlbase}.jpeg', 'JPG')
+        locked = QPixmap.fromImage(image).scaled(width, height) #, Qt.KeepAspectRatio)
+
+        for i in range(image.height()):
+            for k in range(image.width()):
+                image.setPixelColor(k, i, image.pixelColor(k,i).darker(160))
+
+        authorize = QPixmap.fromImage(image).scaled(width, height) #, Qt.KeepAspectRatio)
+
+        authorize.save(os.path.dirname(__file__) + '/Resources/themes/wallpaper.authorize.jpg')
+        locked.save(os.path.dirname(__file__) + '/Resources/themes/wallpaper.locked.jpg')
+        with open(os.path.dirname(__file__) + '/Resources/themes/wallpaper.description', 'w') as f:
+            f.write(title)
+            f.write('\n')
+            f.write(copyright)
+
 
     def dbgMessage(self, txt):
         msg = QMessageBox()
