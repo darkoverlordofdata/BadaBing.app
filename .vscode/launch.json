@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["--pin", "420420"],
+            "args": ["--pin", "420420", "--tz", "-3"],
             "console": "integratedTerminal"
         }
     ]

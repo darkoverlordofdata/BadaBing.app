@@ -128,7 +128,6 @@ class BadaBingMenu(QObject):
             f.write('\n')
             f.write(copyright)
 
-        # replae with python code to create 2 files:
         width = 1368
         height = 768
 
@@ -147,6 +146,8 @@ class BadaBingMenu(QObject):
             f.write(title)
             f.write('\n')
             f.write(copyright)
+
+        os.system(f'launch Filer --set-wallpaper /Resources/gallery/{urlbase}.jpeg')
 
 
     def dbgMessage(self, txt):
