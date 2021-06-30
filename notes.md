@@ -35,3 +35,5 @@ Catlock is desiged for low security situations -
 ### todo 
 * optionally use metalock
 * authorize using password if no --pin is specified
+
+git submodule add https://github.com/Midar/corefw.git ./vendor/corefw
