@@ -147,7 +147,7 @@ class BadaBingMenu(QObject):
             f.write('\n')
             f.write(copyright)
 
-        os.system(f'launch Filer --set-wallpaper /Resources/gallery/{urlbase}.jpeg')
+        os.system(f'launch Filer --set-wallpaper {os.path.dirname(__file__)}/Resources/gallery/{urlbase}.jpeg')
 
 
     def dbgMessage(self, txt):

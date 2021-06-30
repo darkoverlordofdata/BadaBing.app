@@ -28,3 +28,15 @@
     pyqt5
     libappindicator
 
+### build catlock
+
+run as BadaBing.app/catlock/catlock
+```
+cd catlock
+./configure
+cd build
+make
+```
+ ./catlock/catlock --pin 420420 --theme wallpaper 
+
+/home/darko/GitHub/BadaBing.app/catlock.py --pin 420420 --tz -3 --font 'Noto Sans'
