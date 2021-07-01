@@ -22,9 +22,27 @@ list ( APPEND C_SOURCES src/XGuiApplication.c )
 list ( APPEND C_SOURCES src/XGuiFont.c )
 list ( APPEND C_SOURCES src/XGuiLabel.c )
 list ( APPEND C_SOURCES src/XGuiWindow.c )
+list ( APPEND C_SOURCES src/XGuiParams.c )
 list ( APPEND C_SOURCES src/main.c )
-list ( APPEND C_SOURCES src/Params.c )
 list ( APPEND C_SOURCES src/helpers.c )
+
+# list ( APPEND C_SOURCES src/tests.c )
+
+list ( APPEND C_SOURCES src/cfw_array.c )
+list ( APPEND C_SOURCES src/cfw_bool.c )
+list ( APPEND C_SOURCES src/cfw_box.c )
+list ( APPEND C_SOURCES src/cfw_class.c )
+list ( APPEND C_SOURCES src/cfw_double.c )
+list ( APPEND C_SOURCES src/cfw_file.c )
+list ( APPEND C_SOURCES src/cfw_int.c )
+list ( APPEND C_SOURCES src/cfw_map.c )
+list ( APPEND C_SOURCES src/cfw_object.c )
+list ( APPEND C_SOURCES src/cfw_range.c )
+list ( APPEND C_SOURCES src/cfw_refpool.c )
+list ( APPEND C_SOURCES src/cfw_stream.c )
+list ( APPEND C_SOURCES src/cfw_string.c )
+list ( APPEND C_SOURCES src/cfw_tcpsocket.c )
+
 #
 #   application includes
 #
@@ -35,7 +53,7 @@ set ( INCLUDES "${INCLUDES};/usr/include" )
 set ( INCLUDES "${INCLUDES};/usr/include/freetype2" )
 set ( INCLUDES "${INCLUDES};/usr/include/X11" )
 
-set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Os -std=c11" )
+set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Os -std=c18" )
 
 # links folders 
 link_directories ( /usr/local/lib/ )
