@@ -1,3 +1,0 @@
-[submodule "vendor/corefw"]
-	path = vendor/corefw
-	url = https://github.com/Midar/corefw.git
