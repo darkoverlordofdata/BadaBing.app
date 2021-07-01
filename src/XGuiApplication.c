@@ -1,43 +1,80 @@
 #include "XGuiApplication.h"
 
-
-XGuiApplication* XGuiApplication_New()//int verbosity, char* calendar, char* theme_name, char* font_name, bool scrot, char* pin, int tz) 
+/**
+ *	XGuiApplication
+ */
+typedef struct XGuiApplication
 {
-    XGuiApplication* this = (XGuiApplication*)malloc(sizeof(XGuiApplication));
-    return this;
+	CFWObject obj;
+    XGuiWindow* window;
+    XGuiParams* params;
+    CFWString* cwd;
+} XGuiApplication;
+
+/**
+ *	XGuiApplication GetCwd
+ */
+CFWString* XGuiApplication_GetCwd(XGuiApplication* this) {
+	return this->cwd;
 }
 
-void XGuiApplication_Init(XGuiApplication* this) 
-{
-    this->display = XOpenDisplay(NULL);
-
-    if (this->display == NULL) {
-        fprintf(stderr, "Cannot open display\n");
-        exit(1);
-    }
-
-    this->screen = DefaultScreen(this->display);
-
-    this->window = XGuiWindow_New(this);
-
+/**
+ *	XGuiApplication GetWindow
+ */
+XGuiWindow* XGuiApplication_GetWindow(XGuiApplication* this) {
+	return this->window;
 }
 
-void XGuiApplication_Run(XGuiApplication* this)
-{
-    XEvent e;
-    // XGuiApplication_Print(this);
-    bool done = false;
-    while (done == false) {
-        XNextEvent(this->display, &e);
-        if (e.type == KeyPress)
-            break;
-    }
-
+/**
+ *	XGuiApplication GetParams
+ */
+XGuiParams* XGuiApplication_GetParams(XGuiApplication* this) {
+	return this->params;
 }
 
-void XGuiApplication_Dispose(XGuiApplication* this)
+static bool ctor(void *ptr, va_list args)
 {
-    XGuiWindow_Dispose(this->window);
-    XCloseDisplay(this->display);
+    XGuiApplication* this = ptr;
+	int argc = va_arg(args, int);
+    char **argv = va_arg(args, char **);
+
+	this->params = cfw_create(xgui_params, argc, argv);
+	this->window = cfw_create(xgui_window, this);
+
+	char cwd[1024];
+	getcwd(cwd, sizeof(cwd));
+	this->cwd = cfw_create(cfw_string, cwd);
+
+	return true;
 }
 
+static void dtor(void *ptr)
+{
+    printf("XGuiApplication::dtor\n");
+}
+
+static bool equal(void *ptr1, void *ptr2)
+{
+    return false;
+}
+
+static uint32_t hash(void *ptr)
+{
+	return (uint32_t)ptr;
+}
+
+static void* copy(void *ptr)
+{
+	return NULL;
+}
+
+static CFWClass class = {
+	.name = "XGuiApplication",
+	.size = sizeof(XGuiApplication),
+	.ctor = ctor,
+	.dtor = dtor,
+	.equal = equal,
+	.hash = hash,
+	.copy = copy
+};
+CFWClass *xgui_application = &class;

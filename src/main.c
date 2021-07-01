@@ -25,25 +25,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 #include "main.h"
-#include "Params.h"
+#include "XGuiParams.h"
 #include "XGuiApplication.h"
 #include "XGuiWindow.h"
-
+#include "corefw.h"
 
 int main(int argc, char **argv) {
 
 
-    Params* p = Params_New();
-    Params_Init(p, argc, argv);
-    Params_Print(p);
 
-    XGuiApplication* app = XGuiApplication_New();
-    XGuiApplication_Init(app);
-    XGuiWindow_Show(app->window);
+	CFWRefPool *pool = cfw_new(cfw_refpool);
 
-    XGuiApplication_Run(app);
-    XGuiApplication_Dispose(app);
+    XGuiApplication* app = cfw_create(xgui_application, argc, argv);
 
+    printf("CWD: %s\n", cfw_string_c(XGuiApplication_GetCwd(app)));
+
+    XGuiParams_Print(XGuiApplication_GetParams(app));
+    XGuiWindow_Show(XGuiApplication_GetWindow(app));
+    XGuiWindow_Run(XGuiApplication_GetWindow(app));
+
+	cfw_unref(pool);
     
 }
 

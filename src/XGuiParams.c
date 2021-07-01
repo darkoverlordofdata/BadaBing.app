@@ -1,25 +1,80 @@
-#include "Params.h"
+#include "XGuiParams.h"
 
-static struct option longopts[] = {
-    {"help", no_argument, NULL, 'h'},
-    {"version", no_argument, NULL, 'V'},
-    {"scrot", no_argument, NULL, 's'},
-    {"calendar", required_argument, NULL, 'c'},
-    {"pin", required_argument, NULL, 'p'},
-    {"verbosity", required_argument, NULL, 'v'},
-    {"font", required_argument, NULL, 'f'},
-    {"theme", required_argument, NULL, 't'},
-    {"tz", required_argument, NULL, 'z'}
-};
-
-Params* Params_New()
+/**
+ * Constructor
+ *
+ * make a new Params object using command line params
+ */
+static bool ctor(void *ptr, va_list args)
 {
-    Params* this = (Params*)malloc(sizeof(Params));
-    return this;
+    XGuiParams* this = ptr;
+	int argc = va_arg(args, int);
+    char **argv = va_arg(args, char **);
+    XGuiParams_Parse(this, argc, argv);
+
+	return true;
 }
 
-void Params_Init(Params* this, int argc, char **argv) 
+/**
+ * Destructor
+ *
+ * dispose of strings
+ */
+static void dtor(void *ptr)
 {
+    XGuiParams* this = ptr;
+    free(this->calendar);
+    free(this->font_name);
+    free(this->theme_name);
+    free(this->pin);
+    printf("XGuiParams::dtor\n");
+}
+
+/**
+ * Equal
+ *
+ * compare for equality
+ */
+static bool equal(void *ptr1, void *ptr2)
+{
+    return false;
+}
+
+/**
+ * Hash
+ *
+ * returns hash for this object
+ */
+static uint32_t hash(void *ptr)
+{
+	return (uint32_t)ptr;
+}
+
+/**
+ * Copy
+ *
+ * copy this object
+ */
+static void* copy(void *ptr)
+{
+	return NULL;
+}
+
+
+void XGuiParams_Parse(XGuiParams* this, int argc, char **argv) 
+{
+    static struct option longopts[] = {
+        {"help", no_argument, NULL, 'h'},
+        {"version", no_argument, NULL, 'V'},
+        {"scrot", no_argument, NULL, 's'},
+        {"calendar", required_argument, NULL, 'c'},
+        {"pin", required_argument, NULL, 'p'},
+        {"verbosity", required_argument, NULL, 'v'},
+        {"font", required_argument, NULL, 'f'},
+        {"theme", required_argument, NULL, 't'},
+        {"tz", required_argument, NULL, 'z'}
+    };
+
     int longindex = -1;
     int opt = 0;
 
@@ -98,16 +153,8 @@ void Params_Init(Params* this, int argc, char **argv)
 
 }
 
-void Params_Dispose(Params* this)
-{
-    free(this->calendar);
-    free(this->font_name);
-    free(this->theme_name);
-    free(this->calendar);
-    free(this->pin);
-}
 
-void Params_Print(Params* this)
+void XGuiParams_Print(XGuiParams* this)
 {
     printf("tz adjustment %d\n", this->tz);
     printf("verbosity %d\n", this->verbosity);
@@ -119,3 +166,14 @@ void Params_Print(Params* this)
     printf("help %x\n", this->help);
     printf("version %x\n", this->version);
 }
+
+static CFWClass class = {
+	.name = "XGuiParams",
+	.size = sizeof(XGuiParams),
+	.ctor = ctor,
+	.dtor = dtor,
+	.equal = equal,
+	.hash = hash,
+	.copy = copy
+};
+CFWClass *xgui_params = &class;

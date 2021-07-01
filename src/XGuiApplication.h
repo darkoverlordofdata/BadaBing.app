@@ -1,10 +1,15 @@
 #pragma once
 #include "main.h"
 #include "helpers.h"
-#include "XGuiTypes.h"
+#include "XGuiParams.h"
 #include "XGuiWindow.h"
+#include "corefw.h"
 
-XGuiApplication* XGuiApplication_New();//int verbosity, char* calendar, char* theme_name, char* font_name, bool scrot, char* pin, int tz);
-void XGuiApplication_Init(XGuiApplication* this);//, int argc, char **argv);
-void XGuiApplication_Run(XGuiApplication* this);
-void XGuiApplication_Dispose(XGuiApplication* this);
+typedef struct XGuiWindow XGuiWindow;
+typedef struct XGuiApplication XGuiApplication;
+extern CFWClass *xgui_application;
+
+CFWString* XGuiApplication_GetCwd(XGuiApplication* this);
+XGuiWindow* XGuiApplication_GetWindow(XGuiApplication* this);
+XGuiParams* XGuiApplication_GetParams(XGuiApplication* this);
+

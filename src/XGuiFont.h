@@ -1,7 +1,7 @@
 #pragma once
 #include "main.h"
-#include "XGuiTypes.h"
+#include "corefw.h"
 
-XGuiFont* XGuiFont_New(char* name, int size);
+typedef struct XGuiFont XGuiFont;
+extern CFWClass *xgui_font;
 
-void XGuiFont_Dispose(XGuiFont* this);
