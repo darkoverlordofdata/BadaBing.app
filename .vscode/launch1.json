@@ -5,13 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug",
-            "type": "lldb-mi",
+            "name": "Python: Current File",
+            "type": "python",
             "request": "launch",
-            "target": "${workspaceRoot}/build/catlock",
-            "arguments": "",
-            "cwd": "${workspaceRoot}",
-            "valuesFormatting": "parseText"
+            "program": "${file}",
+            "args": ["--pin", "420420", "--tz", "-3"],
+            "console": "integratedTerminal"
         }
     ]
 }

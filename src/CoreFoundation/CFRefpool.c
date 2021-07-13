@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2012, Jonathan Schleifer <js@webkeks.org>
+ * Copyright (c) 2021 Dark Overlord of Data
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,92 +25,91 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
 
 #include "CFObject.h"
 #include "CFRefpool.h"
-#include "CFString.h"
-#include "CFInt.h"
 #include "CFArray.h"
-#include "CFMap.h"
 
-static void
-print_map(CFMapRef map)
+struct __CFRefpool {
+	struct __CFObject obj;
+	void **data;
+	CFSize size;
+	CFRefpoolRef prev, next;
+};
+
+static CFRefpoolRef top;
+
+static struct __CFClass class = {
+	.name = "CFRefPool",
+	.size = sizeof(struct __CFRefpool),
+	.ctor = CFRefpoolCreate,
+	.dtor = CFRefpoolFinalize
+};
+CFClassRef CFRefpoolClass = &class;
+
+
+Boolean 
+CFRefpoolCreate(CFTypeRef self, va_list args)
 {
-	CFMapIter_t iter;
+	CFRefpoolRef this = self;
 
-	CFMapIter(map, &iter);
+	this->data = NULL;
+	this->size = 0;
 
-	fputs("{\n", stdout);
+	if (top != NULL) {
+		this->prev = top;
+		top->next = this;
+	} else
+		this->prev = NULL;
+	this->next = NULL;
 
-	while (iter.key != NULL) {
-		printf("\t%s = ", CFStringC(iter.key));
+	top = this;
 
-		if (CFIs(iter.obj, CFStringClass))
-			printf("%s\n", CFStringC(iter.obj));
-		else if (CFIs(iter.obj, CFIntClass))
-			printf("%jd\n", CFIntValue(iter.obj));
-
-		CFMapIterNext(&iter);
-	}
-
-	fputs("}\n", stdout);
+	return true;
 }
 
-int
-main()
+void 
+CFRefpoolFinalize(CFTypeRef self)
 {
-	CFRefpoolRef pool;
-	CFArrayRef array;
-	CFStringRef str, str2;
-	CFMapRef map;
+	CFRefpoolRef this = self;
 	size_t i;
 
-	pool = CFNew(CFRefpoolClass);
+	if (this->next != NULL)
+		CFUnref(this->next);
 
-	array = CFCreate(CFArrayClass,
-	    CFStringCreate("Hallo"),
-	    CFStringCreate(" Welt"),
-	    CFStringCreate("!"), NULL);
+	for (i = 0; i < this->size; i++)
+		CFUnref(this->data[i]);
 
-	str = CFStringNew(NULL);
+	if (this->data != NULL)
+		free(this->data);
 
-	for (i = 0; i < CFArraySize(array); i++)
-		CFStringAppend(str, CFArrayGet(array, i));
+	top = this->prev;
 
-	CFUnref(pool);
-
-	puts(CFStringC(str));
-
-	pool = CFNew(CFRefpoolClass);
-	str2 = CFStringCreate("ll");
-	printf("%zd\n", CFStringFind(str, str2, CFRangeAll));
-
-	CFUnref(pool);
-	CFUnref(str);
-
-	pool = CFNew(CFRefpoolClass);
-
-	map = CFCreate(CFMapClass,
-	    CFStringCreate("Hallo"),
-	    CFStringCreate("Welt!"),
-	    CFStringCreate("Test"),
-	    CFStringCreate("success!"),
-	    CFStringCreate("int"),
-	    CFCreate(CFIntClass, INTMAX_C(1234)), NULL);
-
-	print_map(map);
-
-	CFMapSet(map,
-	    CFStringCreate("Hallo"),
-	    CFStringCreate("Test"));
-
-	print_map(map);
-
-	CFMapSet(map, CFStringCreate("Hallo"), NULL);
-	print_map(map);
-
-	CFUnref(pool);
-
-	return 0;
+	if (top != NULL)
+		top->next = NULL;
 }
+
+Boolean
+CFRefpoolAdd(CFTypeRef self)
+{
+	void **ndata;
+
+	assert(top != NULL);
+
+	if (top->data != NULL)
+		ndata = realloc(top->data, (top->size + 1) * sizeof(void*));
+	else
+		ndata = malloc((top->size + 1) * sizeof(void*));
+
+	if (ndata == NULL)
+		return false;
+
+	ndata[top->size++] = self;
+
+	top->data = ndata;
+
+	return true;
+}
+

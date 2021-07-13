@@ -1,16 +1,58 @@
-# XGui
+## CoreFramework 
+
+
+Based on https://github.com/Midar/corefw, heavily influenced by the gnustep core.
+
+### CoreFoundation.h
+* CFArray
+* CFBitVector*
+* CFBool
+* CFBox
+* CFClass
+* CFDouble
+* CFFile
+* CFInt
+* CFMap
+* CFObject
+* CFRange
+* CFRefpool
+* CFSocket
+* CFStream
+* CFString
+* CFTypes
+* CFUUID*
+
+
+missing?
+* CFCalendar
+* CFData
+* CFBundle
+* CFDate
+* CFDateFormatter
+* CFDictionary
+* CFError
+* CFNull
+* CFNumber
+* CFNumberFormatter
+* CFSet
+* CFRunLoop
+* CFURL
+
+CFLog function. Use %@ as the print selector for CFObjects:
+```
+CFLog("My name is %@\n", CFGetName(obj));
+```
+
+## UI
 
 x11 widgets in c.
 
 
-XGuiApplication
-XGuiWindow
-XGuiFont
-XGuiLabel
-XGuiText
-XGuiImage
-XGuiKeyboardInput
+UIApplication
+UIWindow
+UIFont
+UILabel
+UIText
+UIImage
+UIKeyboardInput
 
-+ midar's CoreFW (https://github.com/Midar/corefw.git) copied internally for 0 dependencies
-
-int snprintf(char *str, size_t size, const char *format, ...);

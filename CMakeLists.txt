@@ -15,37 +15,20 @@ set ( RELEASE_NAME catlock )
 #
 include ( CMakeToolsHelpers OPTIONAL )
 
-#
-#   application source
-#
-list ( APPEND C_SOURCES src/XGuiApplication.c )
-list ( APPEND C_SOURCES src/XGuiFont.c )
-list ( APPEND C_SOURCES src/XGuiLabel.c )
-list ( APPEND C_SOURCES src/XGuiWindow.c )
-list ( APPEND C_SOURCES src/XGuiParams.c )
-list ( APPEND C_SOURCES src/main.c )
-list ( APPEND C_SOURCES src/helpers.c )
+set(SOURCES
+    src/main.c
+)
+add_subdirectory( src/CoreFoundation )
+add_subdirectory( src/UI )
 
-# list ( APPEND C_SOURCES src/tests.c )
-
-list ( APPEND C_SOURCES src/cfw_array.c )
-list ( APPEND C_SOURCES src/cfw_bool.c )
-list ( APPEND C_SOURCES src/cfw_box.c )
-list ( APPEND C_SOURCES src/cfw_class.c )
-list ( APPEND C_SOURCES src/cfw_double.c )
-list ( APPEND C_SOURCES src/cfw_file.c )
-list ( APPEND C_SOURCES src/cfw_int.c )
-list ( APPEND C_SOURCES src/cfw_map.c )
-list ( APPEND C_SOURCES src/cfw_object.c )
-list ( APPEND C_SOURCES src/cfw_range.c )
-list ( APPEND C_SOURCES src/cfw_refpool.c )
-list ( APPEND C_SOURCES src/cfw_stream.c )
-list ( APPEND C_SOURCES src/cfw_string.c )
-list ( APPEND C_SOURCES src/cfw_tcpsocket.c )
 
 #
 #   application includes
 #
+set ( INCLUDES "${INCLUDES};src" )
+# set ( INCLUDES "${INCLUDES};src/CF" )
+set ( INCLUDES "${INCLUDES};src/UI" )
+
 set ( INCLUDES "${INCLUDES};/usr/local/include" )
 set ( INCLUDES "${INCLUDES};/usr/local/include/freetype2" )
 set ( INCLUDES "${INCLUDES};/usr/local/include/X11" )
@@ -63,12 +46,13 @@ include_directories ( AFTER ${INCLUDES} )
 #
 #   compile ccode & link executable
 #
-add_executable ( ${PROJECT_NAME} ${C_SOURCES} ${RESOURCES} )
+add_executable ( ${PROJECT_NAME} ${SOURCES} ${RESOURCES} )
 add_custom_command ( TARGET ${PROJECT_NAME} 
                    POST_BUILD COMMAND 
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> .. )
                                       
 target_link_libraries ( ${PROJECT_NAME} c X11 Xext Xpm Imlib2 Xft crypt  )
+# target_link_libraries ( ${PROJECT_NAME} c  )
 install ( TARGETS ${PROJECT_NAME} RUNTIME DESTINATION . )
 
 include ( CPack )
