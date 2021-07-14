@@ -25,91 +25,93 @@
  */
 
 #include <stdio.h>
+#include <CoreFX/CoreFX.h>
 
-#include "CFObject.h"
-#include "CFRefpool.h"
-#include "CFString.h"
-#include "CFInt.h"
-#include "CFArray.h"
-#include "CFMap.h"
-
-static void
-print_map(CFMapRef map)
+void Each(CFTypeRef key, CFTypeRef obj) 
 {
-	CFMapIter_t iter;
-
-	CFMapIter(map, &iter);
-
-	fputs("{\n", stdout);
-
-	while (iter.key != NULL) {
-		printf("\t%s = ", CFStringC(iter.key));
-
-		if (CFIs(iter.obj, CFStringClass))
-			printf("%s\n", CFStringC(iter.obj));
-		else if (CFIs(iter.obj, CFIntClass))
-			printf("%jd\n", CFIntValue(iter.obj));
-
-		CFMapIterNext(&iter);
-	}
-
-	fputs("}\n", stdout);
+	CFLog("\t%@ = %@\n", key, obj);
 }
 
 int
 main()
 {
-	CFRefpoolRef pool;
+	CFRefPoolRef pool;
 	CFArrayRef array;
 	CFStringRef str, str2;
 	CFMapRef map;
-	size_t i;
 
-	pool = CFNew(CFRefpoolClass);
+	pool = CFNew(CFRefPoolClass);
 
 	array = CFCreate(CFArrayClass,
-	    CFStringCreate("Hallo"),
-	    CFStringCreate(" Welt"),
-	    CFStringCreate("!"), NULL);
+	    $("Hallo"),
+	    $(" Welt"),
+	    $("!"), 
+		NULL);
+
+	CFForEach(array, ^(int index, CFTypeRef obj) {
+		CFLog("\t%i: %@\n", index, obj);
+
+	});
 
 	str = CFStringNew(NULL);
 
-	for (i = 0; i < CFArraySize(array); i++)
+	for (var i = 0; i < CFArraySize(array); i++)
 		CFStringAppend(str, CFArrayGet(array, i));
 
-	CFUnref(pool);
+	CFUnRef(pool);
 
-	puts(CFStringC(str));
+	CFLog("%s\n", CFStringC(str));
 
-	pool = CFNew(CFRefpoolClass);
-	str2 = CFStringCreate("ll");
-	printf("%zd\n", CFStringFind(str, str2, CFRangeAll));
+	pool = CFNew(CFRefPoolClass);
+	str2 = $("ll");
+	CFLog("%i\n", CFStringFind(str, str2, CFRangeAll));
 
-	CFUnref(pool);
-	CFUnref(str);
+	CFUnRef(pool);
+	CFUnRef(str);
 
-	pool = CFNew(CFRefpoolClass);
+	pool = CFNew(CFRefPoolClass);
 
 	map = CFCreate(CFMapClass,
-	    CFStringCreate("Hallo"),
-	    CFStringCreate("Welt!"),
-	    CFStringCreate("Test"),
-	    CFStringCreate("success!"),
-	    CFStringCreate("int"),
-	    CFCreate(CFIntClass, INTMAX_C(1234)), NULL);
+	    $("Hallo"),	$("Welt!"),
+	    $("Test"),	$("success!"),
+	    $("int"), 	$(1234),
+		NULL);
+		
+	CFLog("{\n");
+	CFForEach(map, Each);
+	CFLog("}\n");
 
-	print_map(map);
+	CFMapSet(map, $("Hallo"), $("Test"));
 
-	CFMapSet(map,
-	    CFStringCreate("Hallo"),
-	    CFStringCreate("Test"));
+	CFLog("{\n");
+	CFForEach(map, ^(CFTypeRef key, CFTypeRef obj) {
+		CFLog("\t%@ = %@\n", key, obj);
+	});
+	CFLog("}\n");
 
-	print_map(map);
+	CFMapSet(map, $("Hallo"), NULL);
 
-	CFMapSet(map, CFStringCreate("Hallo"), NULL);
-	print_map(map);
+	CFLog("{\n");
+	CFForEach(map, ^(CFTypeRef key, CFTypeRef obj) {
+		CFLog("\t%@ = %@\n", key, obj);
+	});
+	CFLog("}\n");
 
-	CFUnref(pool);
+	let bb = $(true);
+
+	CFLog("bb = %$\n", bb);
+
+	let ff = $(3.1415);
+
+	CFLog("ff = %$\n", ff);
+
+	let ii = $(1000L);
+
+	CFLog("ll = %@\n", ii);
+
+	CFLog("StdIn = %@\n", CFStdIn);
+
+	CFUnRef(pool);
 
 	return 0;
 }

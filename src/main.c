@@ -24,15 +24,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-#include <CoreFoundation/CoreFoundation.h>
-// #include <XWidget/XWidget.h>
-// #include <WidgetKit/WidgetKit.h>
-#include <UI/UI.h>
+#include <CoreFX/CoreFX.h>
+#include <UIPack/UIPack.h>
 #include "main.h"
 
 int main(int argc, char **argv) {
 
-	CFRefpoolRef pool = CFNew(CFRefpoolClass);
+	CFRefPoolRef pool = CFNew(CFRefPoolClass);
 
     UIApplicationRef app = CFCreate(UIApplicationClass, argc, argv);
 
@@ -43,7 +41,7 @@ int main(int argc, char **argv) {
     UIWindowShow(UIApplicationGetWindow(app));
     UIWindowRun(UIApplicationGetWindow(app));
 
-	CFUnref(pool);
+	CFUnRef(pool);
     
 }
 
