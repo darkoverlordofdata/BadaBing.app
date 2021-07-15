@@ -52,7 +52,7 @@ typedef struct GXGameVTable
 } GXGameVTable;
 
 
-extern CFClassRef GXGameClass;
+extern CFClass GXGameClass;
 
 extern Float64
 GXGameDelta(CFGameRef);
@@ -78,11 +78,11 @@ GXGameHeight(CFGameRef);
 extern SDL_Window*
 GXGameWindow(CFGameRef);
 
-extern CFStringRef
+extern CFString
 GXGameTitle(CFGameRef);
 
 extern Boolean 
-GXGameConstructor(CFTypeRef, va_list);
+GXGameConstructor(CFType, va_list);
 
 extern GXGameRef 
 GXGameNew(char*, int, int);
@@ -90,8 +90,8 @@ GXGameNew(char*, int, int);
 extern GXGameRef 
 GXGameCreate(char*, int, int);
 
-extern CFStringRef 
-GXGameToString(CFTypeRef);
+extern CFString 
+GXGameToString(CFType);
 
 extern void
 GXGameStart(CFGameRef);

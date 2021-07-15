@@ -33,33 +33,27 @@
 #include <stdarg.h>
 #include "CFTypes.h"
 
-// typedef uint32_t CFHashCode;
-// typedef uint32_t CFType;
-// typedef bool Boolean;
-// typedef void* CFTypeRef;
-// typedef size_t CFSize;
-// typedef size_t CFIndex;
 
-typedef struct __CFClass *CFClassRef;
+typedef struct __CFClass *CFClass;
 
 struct __CFClass 
 {
 	const char 	*name;
 	CFSize 		size;
-	Boolean 	(*ctor)(CFTypeRef, va_list);
-	void 		(*dtor)(CFTypeRef);
-	Boolean		(*equal)(CFTypeRef, CFTypeRef);
-	CFHashCode 	(*hash)(CFTypeRef);
-	CFTypeRef 	(*copy)(CFTypeRef);
-	CFClassRef	(*class)(CFTypeRef);
-	char*		(*tostr)(CFTypeRef);
+	Boolean 	(*ctor)(CFType, va_list);
+	void 		(*dtor)(CFType);
+	Boolean		(*equal)(CFType, CFType);
+	CFHashCode 	(*hash)(CFType);
+	CFType 		(*copy)(CFType);
+	CFClass		(*class)(CFType);
+	char*		(*tostr)(CFType);
 };
 
 
-extern CFClassRef CFClassClass;
+extern CFClass CFClassClass;
 
 
 extern const 
-char* CFClassName(CFClassRef);
+char* CFClassName(CFClass);
 
 

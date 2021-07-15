@@ -32,43 +32,52 @@
 
 struct __CFObject 
 {
-	CFClassRef cls;
+	CFClass cls;
 	int ref_cnt;
 };
 
-typedef struct __CFObject *CFObjectRef;
+typedef struct __CFObject *CFObject;
 
-extern CFClassRef CFObjectClass;
+extern CFClass CFObjectClass;
 
-extern CFTypeRef 
-CFNew(CFClassRef, ...);
+extern CFType 
+CFNewObject(CFClass, ...);
 
-extern CFTypeRef 
-CFCreate(CFClassRef, ...);
+extern CFType 
+CFCreateObject(CFClass, ...);
 
-extern CFTypeRef 
-CFRef(CFTypeRef);
-
-extern void 
-CFUnRef(CFTypeRef);
+extern CFType 
+CFRef(CFType);
 
 extern void 
-CFFree(CFTypeRef);
+CFUnRef(CFType);
 
-extern CFClassRef 
-CFClass(CFTypeRef);
+extern void 
+CFFree(CFType);
+
+extern CFClass 
+CFGetClass(CFType);
 
 extern Boolean 
-CFIsa(CFTypeRef, CFClassRef);
+CFIsa(CFType, CFClass);
 
 extern Boolean
-CFEqual(CFTypeRef, CFTypeRef);
+CFEqual(CFType, CFType);
 
 extern CFHashCode 
-CFHash(CFTypeRef);
+CFHash(CFType);
 
-extern CFTypeRef 
-CFCopy(CFTypeRef);
+extern CFType 
+CFCopy(CFType);
 
-extern CFStringRef 
-ToString(CFTypeRef);
+extern CFTypeID
+CFObjectGetTypeID (void);
+
+CFTypeID
+CFRegisterClass(CFClass);
+
+CFClass 
+CFRegisterFind(char* name);
+
+CFClass 
+CFRegisterGet(CFTypeID index);

@@ -28,6 +28,8 @@
 #include "CFObject.h"
 #include "CFBool.h"
 
+static CFTypeID _kCFBoolTypeID = 0;
+
 struct __CFBool {
 	struct __CFObject obj;
 	bool value;
@@ -42,12 +44,23 @@ static struct __CFClass class = {
 	.copy = CFBoolCopy,
 	.tostr = CFBoolToString
 };
-CFClassRef CFBoolClass = &class;
+CFClass CFBoolClass = &class;
+
+CFTypeID
+CFBoolGetTypeID (void)
+{
+  return _kCFBoolTypeID;
+}
+
+void CFBoolClassInitialize()
+{
+	_kCFBoolTypeID = CFRegisterClass(&class);
+}
 
 Boolean 
-CFBoolCreate(CFTypeRef self, va_list args)
+CFBoolCreate(CFType self, va_list args)
 {
-	CFBoolRef this = self;
+	CFBool this = self;
 
 	this->value = va_arg(args, int);
 
@@ -55,10 +68,10 @@ CFBoolCreate(CFTypeRef self, va_list args)
 }
 
 Boolean 
-CFBoolEqual(CFTypeRef ptr1, CFTypeRef ptr2)
+CFBoolEqual(CFType ptr1, CFType ptr2)
 {
-	CFObjectRef obj2 = ptr2;
-	CFBoolRef boolean1, boolean2;
+	CFObject obj2 = ptr2;
+	CFBool boolean1, boolean2;
 
 	if (obj2->cls != CFBoolClass)
 		return false;
@@ -70,9 +83,9 @@ CFBoolEqual(CFTypeRef ptr1, CFTypeRef ptr2)
 }
 
 char*
-CFBoolToString(CFTypeRef self)
+CFBoolToString(CFType self)
 {
-	CFBoolRef this = self;
+	CFBool this = self;
 	
 	if (this->value) {
 		return "YES";
@@ -83,21 +96,21 @@ CFBoolToString(CFTypeRef self)
 }
 
 CFHashCode 
-CFBoolHash(CFTypeRef self)
+CFBoolHash(CFType self)
 {
-	CFBoolRef this = self;
+	CFBool this = self;
 
 	return (uint32_t)this->value;
 }
 
-CFTypeRef 
-CFBoolCopy(CFTypeRef self)
+CFType 
+CFBoolCopy(CFType self)
 {
 	return CFRef(self);
 }
 
 Boolean
-CFBoolValue(CFBoolRef this)
+CFBoolValue(CFBool this)
 {
 	return this->value;
 }

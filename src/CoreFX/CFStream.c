@@ -32,6 +32,7 @@
 
 #define BUFFER_SIZE 4096
 
+static CFTypeID _kCFStreamTypeID = 0;
 
 static struct __CFClass class = {
 	.name = "CFStream",
@@ -39,13 +40,24 @@ static struct __CFClass class = {
 	.ctor = CFStreamCreate,
 	.dtor = CFStreamFinalize
 };
-CFClassRef CFStreamClass = &class;
+CFClass CFStreamClass = &class;
+
+CFTypeID
+CFStreamGetTypeID (void)
+{
+  return _kCFStreamTypeID;
+}
+
+void CFStreamClassInitialize()
+{
+	_kCFStreamTypeID = CFRegisterClass(&class);
+}
 
 
 Boolean 
-CFStreamCreate(CFTypeRef self, va_list args)
+CFStreamCreate(CFType self, va_list args)
 {
-	CFStreamRef this = self;
+	CFStream this = self;
 
 	this->ops = NULL;
 	this->cache = NULL;
@@ -55,16 +67,16 @@ CFStreamCreate(CFTypeRef self, va_list args)
 }
 
 void 
-CFStreamFinalize(CFTypeRef self)
+CFStreamFinalize(CFType self)
 {
 	CFStreamClose(self);
 }
 
 
 CFSize
-CFStreamRead(CFTypeRef self, CFTypeRef buf, CFSize len)
+CFStreamRead(CFType self, CFType buf, CFSize len)
 {
-	CFStreamRef this = self;
+	CFStream this = self;
 	CFSize ret;
 
 	if (this == NULL || this->ops == NULL)
@@ -103,11 +115,11 @@ CFStreamRead(CFTypeRef self, CFTypeRef buf, CFSize len)
 	}
 }
 
-CFStringRef
-CFStreamReadLine(CFTypeRef self)
+CFString
+CFStreamReadLine(CFType self)
 {
-	CFStreamRef this = self;
-	CFStringRef ret;
+	CFStream this = self;
+	CFString ret;
 	char *buf, *ret_str, *new_cache;
 	ssize_t buf_len;
 	size_t i, ret_len;
@@ -125,7 +137,7 @@ CFStreamReadLine(CFTypeRef self)
 				if (ret_str == NULL)
 					return NULL;
 
-				ret = CFCreate(CFStringClass, (void*)NULL);
+				ret = CFCreate(CFString, (void*)NULL);
 				if (ret == NULL) {
 					free(ret_str);
 					return NULL;
@@ -171,7 +183,7 @@ CFStreamReadLine(CFTypeRef self)
 			if (ret_str == NULL)
 				return NULL;
 
-			ret = CFCreate(CFStringClass, (void*)NULL);
+			ret = CFCreate(CFString, (void*)NULL);
 			if (ret == NULL) {
 				free(ret_str);
 				return NULL;
@@ -211,7 +223,7 @@ CFStreamReadLine(CFTypeRef self)
 					ret_len--;
 				ret_str[ret_len] = '\0';
 
-				ret = CFCreate(CFStringClass, (void*)NULL);
+				ret = CFCreate(CFString, (void*)NULL);
 				if (ret == NULL) {
 					free(buf);
 					free(ret_str);
@@ -259,9 +271,9 @@ CFStreamReadLine(CFTypeRef self)
 }
 
 Boolean
-CFStreamWrite(CFTypeRef self, const CFTypeRef buf, CFSize len)
+CFStreamWrite(CFType self, const CFType buf, CFSize len)
 {
-	CFStreamRef this = self;
+	CFStream this = self;
 
 	if (this == NULL || this->ops == NULL)
 		return false;
@@ -270,13 +282,13 @@ CFStreamWrite(CFTypeRef self, const CFTypeRef buf, CFSize len)
 }
 
 Boolean
-CFStreamWriteString(CFTypeRef self, const char *str)
+CFStreamWriteString(CFType self, const char *str)
 {
-	return CFStreamWrite(self, (const CFTypeRef)str, strlen(str));
+	return CFStreamWrite(self, (const CFType)str, strlen(str));
 }
 
 Boolean
-CFStreamWriteLine(CFTypeRef self, const char *str)
+CFStreamWriteLine(CFType self, const char *str)
 {
 	char *tmp;
 	size_t len;
@@ -300,9 +312,9 @@ CFStreamWriteLine(CFTypeRef self, const char *str)
 }
 
 Boolean
-CFStreamAtEnd(CFTypeRef self)
+CFStreamAtEnd(CFType self)
 {
-	CFStreamRef this = self;
+	CFStream this = self;
 
 	if (this == NULL || this->ops == NULL)
 		return true;
@@ -314,9 +326,9 @@ CFStreamAtEnd(CFTypeRef self)
 }
 
 void
-CFStreamClose(CFTypeRef self)
+CFStreamClose(CFType self)
 {
-	CFStreamRef this = self;
+	CFStream this = self;
 
 	if (this == NULL || this->ops == NULL)
 		return;

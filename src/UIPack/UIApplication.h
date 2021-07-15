@@ -36,19 +36,19 @@
 // typedef struct UIWindowRef *UIWindowRef;
 
 typedef struct __UIApplication *UIApplicationRef;
-extern CFClassRef UIApplicationClass;
+extern CFClass UIApplicationClass;
 
 Boolean
-UIApplicationConstructor(CFTypeRef, va_list);
+UIApplicationConstructor(CFType, va_list);
 
 void 
-UIApplicationFinalize(CFTypeRef);
+UIApplicationFinalize(CFType);
 
-CFStringRef
+CFString
 UIApplicationGetCwd(UIApplicationRef this);
 
 // UIWindowRef
-CFTypeRef
+CFType
 UIApplicationGetWindow(UIApplicationRef this);
 
 UIParamsRef

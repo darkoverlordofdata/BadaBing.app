@@ -34,10 +34,10 @@
 #include "CFString.h"
 
 struct CFStreamOps {
-	ssize_t (*read)	(CFTypeRef , CFTypeRef , CFSize);
-	bool (*write) 	(CFTypeRef, const void *, CFSize);
-	bool (*at_end)	(CFTypeRef );
-	void (*close)	(CFTypeRef );
+	ssize_t (*read)	(CFType , CFType , CFSize);
+	bool (*write) 	(CFType, const void *, CFSize);
+	bool (*at_end)	(CFType );
+	void (*close)	(CFType );
 };
 
 struct __CFStream {
@@ -47,34 +47,36 @@ struct __CFStream {
 	CFSize cache_len;
 };
 
-typedef struct __CFStream *CFStreamRef;
+typedef struct __CFStream *CFStream;
 
-extern CFClassRef CFStreamClass;
+extern CFClass CFStreamClass;
 
 extern Boolean 
-CFStreamCreate(CFTypeRef, va_list);
+CFStreamCreate(CFType, va_list);
 
 extern void 
-CFStreamFinalize(CFTypeRef);
+CFStreamFinalize(CFType);
 
 extern CFSize 
-CFStreamRead(CFTypeRef , CFTypeRef , CFSize);
+CFStreamRead(CFType , CFType , CFSize);
 
-extern CFStringRef 
-CFStreamReadLine(CFTypeRef );
-
-extern Boolean 
-CFStreamWrite(CFTypeRef , const CFTypeRef , CFSize);
+extern CFString 
+CFStreamReadLine(CFType );
 
 extern Boolean 
-CFStreamWriteString(CFTypeRef , const char*);
+CFStreamWrite(CFType , const CFType , CFSize);
 
 extern Boolean 
-CFStreamWriteLine(CFTypeRef , const char*);
+CFStreamWriteString(CFType , const char*);
 
 extern Boolean 
-CFStreamAtEnd(CFTypeRef );
+CFStreamWriteLine(CFType , const char*);
+
+extern Boolean 
+CFStreamAtEnd(CFType );
 
 extern void 
-CFStreamClose(CFTypeRef );
+CFStreamClose(CFType );
 
+extern CFTypeID
+CFStreamGetTypeID (void);

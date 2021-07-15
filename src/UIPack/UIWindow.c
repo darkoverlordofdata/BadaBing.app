@@ -60,13 +60,13 @@ static struct __CFClass class =
 	.dtor = UIWindowFinalize
 };
 
-CFClassRef UIWindowClass = &class;
+CFClass UIWindowClass = &class;
 
 Boolean
 /**
  * Constructor
  */
-UIWindowConstructor(CFTypeRef self, va_list args)
+UIWindowConstructor(CFType self, va_list args)
 {
     UIWindowRef this = self;
 
@@ -101,7 +101,7 @@ void
 /**
  * Finalize
  */
-UIWindowFinalize(CFTypeRef self)
+UIWindowFinalize(CFType self)
 {
     UIWindowRef this = self;
     XDestroyWindow(this->display, this->top);

@@ -20,11 +20,11 @@ struct __GXGame
     float mMouseX;
     float mMouseY;
     SDL_Window* mWindow;
-    CFStringRef mTitle;
+    CFString mTitle;
     GLuint mWidth;
     GLuint mHeight;
     Float64 mDelta;
-    CFTypeRef mSubclass;
+    CFType mSubclass;
     GXGameVTable mVtbl;
     int mTicks;
     int mFps;
@@ -51,7 +51,7 @@ static struct __CFClass class = {
     .tostr = GXGameToString
 };
 
-CFClassRef CFArrayClass = &class;
+CFClass CFArrayClass = &class;
 
 /** Properties: */
 Float64 GXGameDelta     (GXGameRef this) { return this->mDelta; }
@@ -62,15 +62,15 @@ Float32 GXGameMouseY    (GXGameRef this) { return this->mMouseY; }
 Int32   GXGameWidth     (GXGameRef this) { return this->mWidth; }
 Int32   GXGameHeight    (GXGameRef this) { return this->mHeight; }
 SDL_Window* GXGameWindow(GXGameRef this) { return this->mWindow; }
-CFStringRef GXGameTitle (GXGameRef this) { return this->mTitle; }
+CFString GXGameTitle (GXGameRef this) { return this->mTitle; }
 
 
-GXGameRef GXGameNew(char* title, int width, int height, CFTypeRef subclass, GXGameVTable* vtbl)
+GXGameRef GXGameNew(char* title, int width, int height, CFType subclass, GXGameVTable* vtbl)
 {
     return CFNew(GXGameClass, title, width, height, subclass, vtbl);
 }
 
-GXGameRef GXGameCreate(char* title, int width, int height, CFTypeRef subclass, GXGameVTable* vtbl)
+GXGameRef GXGameCreate(char* title, int width, int height, CFType subclass, GXGameVTable* vtbl)
 {
     return CFCreate(GXGameClass, title, width, height, subclass, vtbl);
 }
@@ -84,13 +84,13 @@ GXGameRef GXGameCreate(char* title, int width, int height, CFTypeRef subclass, G
  * 
  */
  Boolean
- GXGameConstructor(CFTypeRef self, va_list args)
+ GXGameConstructor(CFType self, va_list args)
  {
 	GXGameRef this = self;
 	char *title = va_arg(args, char*);
     int width = va_arg(args, int);
     int height = va_arg(args, int);
-    CFTypeRef subclass = va_arg(args, CFTypeRef);
+    CFType subclass = va_arg(args, CFType);
     GXGameVTable* vtbl = va_arg(args, GXGameVTable*);
 
     this->mVtbl = vtbl; 
@@ -149,7 +149,7 @@ GXGameCreatePlatform(GXGameRef this)
 
 }
 
-CFStringRef
+CFString
 GXGameToString(GXGameRef this) 
 { 
     return CFStringCreate("GXGame"); 

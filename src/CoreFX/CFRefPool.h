@@ -29,14 +29,17 @@
 
 #include "CFClass.h"
 
-typedef struct __CFRefPool *CFRefPoolRef;
-extern CFClassRef CFRefPoolClass;
+typedef struct __CFRefPool *CFRefPool;
+extern CFClass CFRefPoolClass;
 
 extern Boolean 
-CFRefPoolCreate(CFTypeRef, va_list);
+CFRefPoolCreate(CFType, va_list);
 
 extern void 
-CFRefPoolFinalize(CFTypeRef);
+CFRefPoolFinalize(CFType);
 
 extern Boolean 
-CFRefPoolAdd(CFTypeRef);
+CFRefPoolAdd(CFType);
+
+extern CFTypeID
+CFRefPoolGetTypeID (void);

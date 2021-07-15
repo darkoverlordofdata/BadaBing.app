@@ -32,14 +32,16 @@
 #include "CFRefPool.h"
 #include "CFArray.h"
 
+static CFTypeID _kCFRefPoolTypeID = 0;
+
 struct __CFRefPool {
 	struct __CFObject obj;
 	void **data;
 	CFSize size;
-	CFRefPoolRef prev, next;
+	CFRefPool prev, next;
 };
 
-static CFRefPoolRef top;
+static CFRefPool top;
 
 static struct __CFClass class = {
 	.name = "CFRefPool",
@@ -47,13 +49,24 @@ static struct __CFClass class = {
 	.ctor = CFRefPoolCreate,
 	.dtor = CFRefPoolFinalize
 };
-CFClassRef CFRefPoolClass = &class;
+CFClass CFRefPoolClass = &class;
+
+CFTypeID
+CFRefPoolGetTypeID (void)
+{
+  return _kCFRefPoolTypeID;
+}
+
+void CFRefPoolClassInitialize()
+{
+	_kCFRefPoolTypeID = CFRegisterClass(&class);
+}
 
 
 Boolean 
-CFRefPoolCreate(CFTypeRef self, va_list args)
+CFRefPoolCreate(CFType self, va_list args)
 {
-	CFRefPoolRef this = self;
+	CFRefPool this = self;
 
 	this->data = NULL;
 	this->size = 0;
@@ -71,9 +84,9 @@ CFRefPoolCreate(CFTypeRef self, va_list args)
 }
 
 void 
-CFRefPoolFinalize(CFTypeRef self)
+CFRefPoolFinalize(CFType self)
 {
-	CFRefPoolRef this = self;
+	CFRefPool this = self;
 	size_t i;
 
 	if (this->next != NULL)
@@ -92,7 +105,7 @@ CFRefPoolFinalize(CFTypeRef self)
 }
 
 Boolean
-CFRefPoolAdd(CFTypeRef self)
+CFRefPoolAdd(CFType self)
 {
 	void **ndata;
 

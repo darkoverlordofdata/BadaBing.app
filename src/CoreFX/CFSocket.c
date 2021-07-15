@@ -43,7 +43,9 @@
 
 int snprintf(char *str, size_t size, const char *format, ...);
 
-struct __CFTCPSocket {
+static CFTypeID _kCFSocketTypeID = 0;
+
+struct __CFSocket {
 	struct __CFStream stream;
 	int fd;
 	bool at_end;
@@ -51,17 +53,29 @@ struct __CFTCPSocket {
 
 
 static struct __CFClass class = {
-	.name = "CFTCPSocket",
-	.size = sizeof(struct __CFTCPSocket),
-	.ctor = CFTCPSocketCreate,
-	.dtor = CFTCPSocketFinalize
+	.name = "CFSocket",
+	.size = sizeof(struct __CFSocket),
+	.ctor = CFSocketCreate,
+	.dtor = CFSocketFinalize
 };
-CFClassRef CFTCPSocketClass = &class;
+CFClass CFSocketClass = &class;
+
+CFTypeID
+CFSocketGetTypeID (void)
+{
+  return _kCFSocketTypeID;
+}
+
+
+void CFSocketClassInitialize()
+{
+	_kCFSocketTypeID = CFRegisterClass(&class);
+}
 
 static ssize_t
 sock_read(void *self, void *buf, size_t len)
 {
-	CFTCPSocketRef this = self;
+	CFSocket this = self;
 	ssize_t ret;
 
 	if ((ret = recv(this->fd, buf, len, 0)) == 0)
@@ -73,7 +87,7 @@ sock_read(void *self, void *buf, size_t len)
 static bool
 sock_write(void *self, const void *buf, size_t len)
 {
-	CFTCPSocketRef this = self;
+	CFSocket this = self;
 	ssize_t ret;
 
 	if ((ret = send(this->fd, buf, len, 0)) < len)
@@ -85,7 +99,7 @@ sock_write(void *self, const void *buf, size_t len)
 static bool
 sock_at_end(void *self)
 {
-	CFTCPSocketRef this = self;
+	CFSocket this = self;
 
 	return this->at_end;
 }
@@ -93,7 +107,7 @@ sock_at_end(void *self)
 static void
 sock_close(void *self)
 {
-	CFTCPSocketRef this = self;
+	CFSocket this = self;
 
 	if (this->fd != -1)
 		close(this->fd);
@@ -107,9 +121,9 @@ static struct CFStreamOps stream_ops = {
 };
 
 Boolean 
-CFTCPSocketCreate(CFTypeRef self, va_list args)
+CFSocketCreate(CFType self, va_list args)
 {
-	CFTCPSocketRef this = self;
+	CFSocket this = self;
 
 	CFStreamClass->ctor(self, args);
 
@@ -121,13 +135,13 @@ CFTCPSocketCreate(CFTypeRef self, va_list args)
 }
 
 void 
-CFTCPSocketFinalize(CFTypeRef self)
+CFSocketFinalize(CFType self)
 {
 	CFStreamClass->dtor(self);
 }
 
 Boolean
-CFTCPSocketConnect(CFTCPSocketRef this, const char *host, uint16_t port)
+CFSocketConnect(CFSocket this, const char *host, uint16_t port)
 {
 	struct addrinfo hints, *res, *res0;
 	char portstr[7];

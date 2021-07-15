@@ -17,7 +17,7 @@ static struct __CFClass class = {
 };
 
 Boolean
-GXSpriteRendererConstructor(CFTypeRef self, va_list args)
+GXSpriteRendererConstructor(CFType self, va_list args)
 {
 	GXSpriteRendererRef this = self;
     this->mShader = va_arg(args, GXShaderRef);
@@ -38,13 +38,13 @@ GXSpriteRendererCreate(GXShaderRef shader)
 }
 
 void
-GXSpriteRendererFinalize(CFTypeRef self)
+GXSpriteRendererFinalize(CFType self)
 {
 	GXSpriteRendererRef this = self;
     GL.DeleteVertexArrays(1, &this->mQuadVAO);
 }
 
-CFStringRef
+CFString
 GXSpriteRendererToString { return CFCreateString("Shader"); }
 
 void

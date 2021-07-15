@@ -28,23 +28,26 @@
 #pragma once
 #include "CFClass.h"
 
-typedef struct __CFDouble *CFDoubleRef;
-extern CFClassRef CFDoubleClass;
+typedef struct __CFDouble *CFDouble;
+extern CFClass CFDoubleClass;
 
 extern Boolean 
-CFDoubleCreate(CFTypeRef, va_list);
+CFDoubleCreate(CFType, va_list);
 
 extern Boolean 
-CFDoubleEqual(CFTypeRef, CFTypeRef);
+CFDoubleEqual(CFType, CFType);
 
 extern CFHashCode 
-CFDoubleHash(CFTypeRef);
+CFDoubleHash(CFType);
 
-extern CFTypeRef 
-CFDoubleCopy(CFTypeRef);
+extern CFType 
+CFDoubleCopy(CFType);
 
 extern double 
-CFDoubleValue(CFDoubleRef);
+CFDoubleValue(CFDouble);
 
 extern char* 
-CFDoubleToString(CFTypeRef self);
+CFDoubleToString(CFType self);
+
+extern CFTypeID
+CFDoubleGetTypeID (void);

@@ -152,7 +152,7 @@ static inline int CFvsnprintf(char* str, size_t n, const char* format, va_list _
     int l;
     int c;
     char *s;
-    CFObjectRef object;
+    CFObject object;
     char *dst = str;
     bool update = (str != NULL);
     int length = 0;
@@ -251,7 +251,7 @@ static inline int CFvsnprintf(char* str, size_t n, const char* format, va_list _
 
         case '$':   /** DaRKSTEP object */
         case '@':   /** DaRKSTEP object */
-            object = va_arg(arg, CFObjectRef);   
+            object = va_arg(arg, CFObject);   
             l = strlen(object->cls->tostr(object));
             if (update) dst = strncpy(dst, object->cls->tostr(object), l) + l;
             length += l;

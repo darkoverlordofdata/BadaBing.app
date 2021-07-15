@@ -29,62 +29,65 @@
 
 #include "CFClass.h"
 
-typedef struct __CFMap *CFMapRef;
+typedef struct __CFMap *CFMap;
 
 typedef struct CFMapIter_t {
 	void *key, *obj;
 	/* private */
-	CFMapRef _map;
+	CFMap _map;
 	uint32_t _pos;
 } CFMapIter_t;
 
-extern CFClassRef CFMapClass;
+extern CFClass CFMapClass;
 
 extern Boolean 
-CFMapCreate(CFTypeRef, va_list);
+CFMapCreate(CFType, va_list);
 
 extern void 
-CFMapFinalize(CFTypeRef);
+CFMapFinalize(CFType);
 
 extern Boolean 
-CFMapEqual(CFTypeRef, CFTypeRef);
+CFMapEqual(CFType, CFType);
 
 extern CFHashCode 
-CFMapHash(CFTypeRef);
+CFMapHash(CFType);
 
-extern CFTypeRef 
-CFMapCopy(CFTypeRef);
+extern CFType 
+CFMapCopy(CFType);
 
 extern CFSize 
-CFMapSize(CFMapRef);
+CFMapSize(CFMap);
 
-extern CFTypeRef 
-CFMapGet(CFMapRef, CFTypeRef);
+extern CFType 
+CFMapGet(CFMap, CFType);
 
-extern CFTypeRef 
-CFMapGetC(CFMapRef, const char*);
-
-extern Boolean 
-CFMapSet(CFMapRef, CFTypeRef, CFTypeRef);
+extern CFType 
+CFMapGetC(CFMap, const char*);
 
 extern Boolean 
-CFMapSetC(CFMapRef, const char*, CFTypeRef);
+CFMapSet(CFMap, CFType, CFType);
+
+extern Boolean 
+CFMapSetC(CFMap, const char*, CFType);
 
 extern void 
-CFMapIter(CFMapRef, CFMapIter_t*);
+CFMapIter(CFMap, CFMapIter_t*);
 
 extern void 
 CFMapIterNext(CFMapIter_t*);
 
 extern char* 
-CFMapToString(CFTypeRef self);
+CFMapToString(CFType self);
+
+extern CFTypeID
+CFMapGetTypeID (void);
 
 #ifdef __CoreFX_Advanced_Mode__
 
 void __attribute__((overloadable))
-CFForEach(CFMapRef const this, void (^each)(CFTypeRef, CFTypeRef));
+CFForEach(CFMap const this, void (^each)(CFType, CFType));
 
 void __attribute__((overloadable))
-CFForEach(CFMapRef const this, void (*each)(CFTypeRef, CFTypeRef));
+CFForEach(CFMap const this, void (*each)(CFType, CFType));
 
 #endif

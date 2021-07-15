@@ -29,6 +29,8 @@
 #include "CFObject.h"
 #include "CFDouble.h"
 
+static CFTypeID _kCFDoubleTypeID = 0;
+
 struct __CFDouble {
 	struct __CFObject obj;
 	double value;
@@ -43,21 +45,32 @@ static struct __CFClass class = {
 	.copy = CFDoubleCopy,
 	.tostr = CFDoubleToString
 };
-CFClassRef CFDoubleClass = &class;
+CFClass CFDoubleClass = &class;
+
+CFTypeID
+CFDoubleGetTypeID (void)
+{
+  return _kCFDoubleTypeID;
+}
+
+void CFDoubleClassInitialize()
+{
+	_kCFDoubleTypeID = CFRegisterClass(&class);
+}
 
 Boolean 
-CFDoubleCreate(CFTypeRef self, va_list args)
+CFDoubleCreate(CFType self, va_list args)
 {
-	CFDoubleRef this = self;
+	CFDouble this = self;
 	this->value = va_arg(args, double);
 	return true;
 }
 
 Boolean 
-CFDoubleEqual(CFTypeRef ptr1, CFTypeRef ptr2)
+CFDoubleEqual(CFType ptr1, CFType ptr2)
 {
-	CFObjectRef obj2 = ptr2;
-	CFDoubleRef double1, double2;
+	CFObject obj2 = ptr2;
+	CFDouble double1, double2;
 
 	if (obj2->cls != CFDoubleClass)
 		return false;
@@ -69,32 +82,32 @@ CFDoubleEqual(CFTypeRef ptr1, CFTypeRef ptr2)
 }
 
 CFHashCode 
-CFDoubleHash(CFTypeRef self)\
+CFDoubleHash(CFType self)\
 {
-	CFDoubleRef this = self;
+	CFDouble this = self;
 
 	/* FIXME: Create a proper hash! */
 	return (CFHashCode)this->value;
 }
 
-CFTypeRef 
-CFDoubleCopy(CFTypeRef self)
+CFType 
+CFDoubleCopy(CFType self)
 {
 	return CFRef(self);
 }
 
 double
-CFDoubleValue(CFDoubleRef this)
+CFDoubleValue(CFDouble this)
 {
 	return this->value;
 }
 
 char* 
-CFDoubleToString(CFTypeRef self)
+CFDoubleToString(CFType self)
 {
 	static char str[64]; 
 
-	CFDoubleRef this = self;
+	CFDouble this = self;
 	snprintf(str, 63, "%f", this->value);
 	return str;
 }

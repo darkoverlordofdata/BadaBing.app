@@ -30,29 +30,29 @@
 #include "CFClass.h"
 #include "CFRange.h"
 
-typedef struct __CFString *CFStringRef;
-extern CFClassRef CFStringClass;
+typedef struct __CFString *CFString;
+extern CFClass CFStringClass;
 
-extern CFStringRef 
+extern CFString 
 CFStringNew(const char*);
 
-extern CFStringRef
+extern CFString
 CFStringCreate(const char*);
 
 extern Boolean 
-CFStringConstructor(CFTypeRef, va_list);
+CFStringConstructor(CFType, va_list);
 
 extern void 
-CFStringFinalize(CFTypeRef);
+CFStringFinalize(CFType);
 
 extern Boolean 
-CFStringEqual(CFTypeRef, CFTypeRef);
+CFStringEqual(CFType, CFType);
 
 extern CFHashCode 
-CFStringHash(CFTypeRef);
+CFStringHash(CFType);
 
-extern CFTypeRef 
-CFStringCopy(CFTypeRef);
+extern CFType 
+CFStringCopy(CFType);
 
 extern CFSize 
 CFStrnlen(const char*, CFSize);
@@ -64,40 +64,43 @@ extern char*
 CFStrndup(const char*, CFSize);
 
 extern char* 
-CFStringC(CFStringRef);
+CFStringC(CFString);
 
 extern CFSize 
-CFStringLength(CFStringRef);
+CFStringLength(CFString);
 
 extern Boolean 
-CFStringSet(CFStringRef, const char*);
+CFStringSet(CFString, const char*);
 
 extern void 
-CFStringSetNocopy(CFStringRef, char*, CFSize);
+CFStringSetNocopy(CFString, char*, CFSize);
 
 extern Boolean 
-CFStringAppend(CFStringRef, CFStringRef);
+CFStringAppend(CFString, CFString);
 
 extern Boolean 
-CFStringAppendC(CFStringRef, const char*);
+CFStringAppendC(CFString, const char*);
 
 extern Boolean 
-CFStringHasPrefix(CFStringRef, CFStringRef);
+CFStringHasPrefix(CFString, CFString);
 
 extern Boolean 
-CFStringHasPrefixC(CFStringRef, const char*);
+CFStringHasPrefixC(CFString, const char*);
 
 extern Boolean 
-CFStringHasSuffix(CFStringRef, CFStringRef);
+CFStringHasSuffix(CFString, CFString);
 
 extern Boolean 
-CFStringHasSuffixC(CFStringRef, const char*);
+CFStringHasSuffixC(CFString, const char*);
 
 extern CFSize 
-CFStringFind(CFStringRef, CFStringRef, CFRange_t);
+CFStringFind(CFString, CFString, CFRange_t);
 
 extern CFSize 
-CFStringFindC(CFStringRef, const char*, CFRange_t);
+CFStringFindC(CFString, const char*, CFRange_t);
 
 extern char*
-CFStringToString(CFTypeRef);
+CFStringToString(CFType);
+
+extern CFTypeID
+CFStringGetTypeID (void);

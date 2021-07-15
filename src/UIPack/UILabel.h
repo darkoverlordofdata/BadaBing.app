@@ -31,13 +31,13 @@
 #include "UITypes.h"
 
 typedef struct __UILabel *UILabelRef;
-extern CFClassRef UILabelClass;
+extern CFClass UILabelClass;
 
 Boolean
-UILabelConstructor(CFTypeRef, va_list);
+UILabelConstructor(CFType, va_list);
 
 void 
-UILabelFinalize(CFTypeRef);
+UILabelFinalize(CFType);
 
 void 
 UILabelSetText(UILabelRef, char*);

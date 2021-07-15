@@ -29,20 +29,23 @@
 
 #include "CFClass.h"
 
-typedef struct __CFFile *CFFileRef;
+typedef struct __CFFile *CFFile;
 
-extern CFClassRef CFFileClass;
+extern CFClass CFFileClass;
 
 extern Boolean 
-CFFileCreate(CFTypeRef, va_list);
+CFFileCreate(CFType, va_list);
 
 extern void 
-CFFileFinalize(CFTypeRef);
+CFFileFinalize(CFType);
 
 extern char* 
-CFFileToString(CFTypeRef self);
+CFFileToString(CFType self);
 
-extern CFFileRef CFStdIn;
-extern CFFileRef CFStdOut;
-extern CFFileRef CFStdErr;
+extern CFTypeID
+CFFileGetTypeID (void);
+
+extern CFFile CFStdIn;
+extern CFFile CFStdOut;
+extern CFFile CFStdErr;
 

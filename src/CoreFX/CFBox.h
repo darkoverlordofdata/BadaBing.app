@@ -29,18 +29,17 @@
 
 #include "CFClass.h"
 
-typedef struct __CFBox *CFBoxRef;
-extern CFClassRef CFBoxClass;
+typedef struct __CFBox *CFBox;
+extern CFClass CFBoxClass;
 
 extern Boolean 
-CFBoxCreate(CFTypeRef, va_list);
+CFBoxCreate(CFType, va_list);
 
 extern void 
-CFBoxFinalize(CFTypeRef);
-
-extern CFTypeRef 
-CFBoxPtr(CFBoxRef);
+CFBoxFinalize(CFType);
 
 extern CFType 
-CFBoxType(CFBoxRef);
+CFBoxPtr(CFBox);
 
+extern CFTypeID
+CFBoxGetTypeID (void);

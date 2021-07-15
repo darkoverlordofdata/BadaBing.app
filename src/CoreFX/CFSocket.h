@@ -27,16 +27,18 @@
 
 #pragma once
 
-typedef struct __CFTCPSocket* CFTCPSocketRef;
+typedef struct __CFSocket* CFSocket;
 
-extern CFClassRef CFStringClass;
+extern CFClass CFStringClass;
 
 extern Boolean 
-CFTCPSocketCreate(CFTypeRef, va_list);
+CFSocketCreate(CFType, va_list);
 
 extern void 
-CFTCPSocketFinalize(CFTypeRef);
+CFSocketFinalize(CFType);
 
 extern Boolean 
-CFTCPSocketConnect(CFTCPSocketRef, const char*, uint16_t);
+CFSocketConnect(CFSocket, const char*, uint16_t);
 
+extern CFTypeID
+CFSocketGetTypeID (void);

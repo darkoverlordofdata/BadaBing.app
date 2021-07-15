@@ -34,7 +34,7 @@ struct __UIApplication
 	struct __CFObject obj;
     UIWindowRef window;
     UIParamsRef params;
-    CFStringRef cwd;
+    CFString cwd;
 };
 
 static struct __CFClass class = {
@@ -43,27 +43,27 @@ static struct __CFClass class = {
 	.ctor = UIApplicationConstructor,
 	.dtor = UIApplicationFinalize
 };
-CFClassRef UIApplicationClass = &class;
+CFClass UIApplicationClass = &class;
 
 Boolean
-UIApplicationConstructor(CFTypeRef self, va_list args)
+UIApplicationConstructor(CFType self, va_list args)
 {
     UIApplicationRef this = self;
 	int argc = va_arg(args, int);
     char **argv = va_arg(args, char **);
 
-	this->params = CFCreate(UIParamsClass, argc, argv);
-	this->window = CFCreate(UIWindowClass, this);
+	this->params = CFCreate(UIParams, argc, argv);
+	this->window = CFCreate(UIWindow, this);
 
 	char cwd[1024];
 	getcwd(cwd, sizeof(cwd));
-	this->cwd =CFCreate(CFStringClass, cwd);
+	this->cwd =CFCreate(CFString, cwd);
 
 	return true;
 }
 
 void 
-UIApplicationFinalize(CFTypeRef self)
+UIApplicationFinalize(CFType self)
 {
     CFLog("UIApplication::dtor\n");
 }
@@ -72,7 +72,7 @@ UIApplicationFinalize(CFTypeRef self)
 /**
  *	UIApplication GetCwd
  */
-CFStringRef 
+CFString 
 UIApplicationGetCwd(UIApplicationRef this) {
 	return this->cwd;
 }
@@ -81,7 +81,7 @@ UIApplicationGetCwd(UIApplicationRef this) {
  *	UIApplication GetWindow
  */
 // UIWindowRef 
-CFTypeRef
+CFType
 UIApplicationGetWindow(UIApplicationRef this) {
 	return this->window;
 }

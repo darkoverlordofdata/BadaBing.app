@@ -30,6 +30,8 @@
 #include "CFObject.h"
 #include "CFBox.h"
 
+static CFTypeID _kCFBoxTypeID = 0;
+
 struct __CFBox {
 	struct __CFObject obj;
 	void *self;
@@ -43,12 +45,24 @@ static struct __CFClass class = {
 	.ctor = CFBoxCreate,
 	.dtor = CFBoxFinalize
 };
-CFClassRef CFBoxClass = &class;
+CFClass CFBoxClass = &class;
+
+CFTypeID
+CFBoxGetTypeID (void)
+{
+  return _kCFBoxTypeID;
+}
+
+void CFBoxClassInitialize()
+{
+	_kCFBoxTypeID = CFRegisterClass(&class);
+}
+
 
 Boolean 
-CFBoxCreate(CFTypeRef self, va_list args)
+CFBoxCreate(CFType self, va_list args)
 {
-	CFBoxRef this = self;
+	CFBox this = self;
 
 	this->self = va_arg(args, void*);
 	this->type = va_arg(args, uint32_t);
@@ -58,22 +72,22 @@ CFBoxCreate(CFTypeRef self, va_list args)
 }
 
 void 
-CFBoxFinalize(CFTypeRef self)
+CFBoxFinalize(CFType self)
 {
-	CFBoxRef this = self;
+	CFBox this = self;
 
 	if (this->free)
 		free(this->self);
 }
 
 void*
-CFBoxPtr(CFBoxRef this)
+CFBoxPtr(CFBox this)
 {
 	return this->self;
 }
 
 uint32_t
-CFBoxType(CFBoxRef this)
+CFBoxTypeID(CFBox this)
 {
 	return this->type;
 }

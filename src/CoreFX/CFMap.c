@@ -32,8 +32,10 @@
 #include "CFHash.h"
 #include "CFString.h"
 
+static CFTypeID _kCFMapTypeID = 0;
+
 static struct bucket {
-	CFObjectRef key, obj;
+	CFObject key, obj;
 	uint32_t hash;
 } deleted = { NULL, NULL, 0 };
 
@@ -55,13 +57,24 @@ static struct __CFClass class = {
 	.tostr = CFMapToString
 
 };
-CFClassRef CFMapClass = &class;
+CFClass CFMapClass = &class;
+
+CFTypeID
+CFMapGetTypeID (void)
+{
+  return _kCFMapTypeID;
+}
+
+void CFMapClassInitialize()
+{
+	_kCFMapTypeID = CFRegisterClass(&class);
+}
 
 
 Boolean 
-CFMapCreate(CFTypeRef self, va_list args)
+CFMapCreate(CFType self, va_list args)
 {
-	CFMapRef this = self;
+	CFMap this = self;
 	void *key;
 
 	this->data = NULL;
@@ -76,9 +89,9 @@ CFMapCreate(CFTypeRef self, va_list args)
 }
 
 void 
-CFMapFinalize(CFTypeRef self)
+CFMapFinalize(CFType self)
 {
-	CFMapRef this = self;
+	CFMap this = self;
 	uint32_t i;
 
 	for (i = 0; i < this->size; i++) {
@@ -94,10 +107,10 @@ CFMapFinalize(CFTypeRef self)
 }
 
 Boolean 
-CFMapEqual(CFTypeRef ptr1, CFTypeRef ptr2)
+CFMapEqual(CFType ptr1, CFType ptr2)
 {
-	CFObjectRef obj2 = ptr2;
-	CFMapRef map1, map2;
+	CFObject obj2 = ptr2;
+	CFMap map1, map2;
 	uint32_t i;
 
 	if (obj2->cls != CFMapClass)
@@ -119,9 +132,9 @@ CFMapEqual(CFTypeRef ptr1, CFTypeRef ptr2)
 }
 
 CFHashCode 
-CFMapHash(CFTypeRef self)
+CFMapHash(CFType self)
 {
-	CFMapRef this = self;
+	CFMap this = self;
 	uint32_t i, hash = 0;
 
 	for (i = 0; i < this->size; i++) {
@@ -134,14 +147,14 @@ CFMapHash(CFTypeRef self)
 	return hash;
 }
 
-CFTypeRef 
-CFMapCopy(CFTypeRef self)
+CFType 
+CFMapCopy(CFType self)
 {
-	CFMapRef this = self;
-	CFMapRef new;
+	CFMap this = self;
+	CFMap new;
 	uint32_t i;
 
-	if ((new = CFNew(CFMapClass, (void*)NULL)) == NULL)
+	if ((new = CFNew(CFMap, (void*)NULL)) == NULL)
 		return NULL;
 
 	if ((new->data = malloc(sizeof(*new->data) * this->size)) == NULL)
@@ -168,7 +181,7 @@ CFMapCopy(CFTypeRef self)
 }
 
 bool
-resize(CFMapRef this, uint32_t items)
+resize(CFMap this, uint32_t items)
 {
 	size_t fullness = items * 4 / this->size;
 	struct bucket **ndata;
@@ -226,13 +239,13 @@ resize(CFMapRef this, uint32_t items)
 }
 
 CFSize
-CFMapSize(CFMapRef this)
+CFMapSize(CFMap this)
 {
 	return this->items;
 }
 
-CFTypeRef
-CFMapGet(CFMapRef this, CFTypeRef key)
+CFType
+CFMapGet(CFMap this, CFType key)
 {
 	uint32_t i, hash, last;
 
@@ -268,13 +281,13 @@ CFMapGet(CFMapRef this, CFTypeRef key)
 	return NULL;
 }
 
-CFTypeRef
-CFMapGetC(CFMapRef this, const char *key)
+CFType
+CFMapGetC(CFMap this, const char *key)
 {
-	CFStringRef str;
+	CFString str;
 	void *ret;
 
-	if ((str = CFNew(CFStringClass, key)) == NULL)
+	if ((str = CFNew(CFMap, key)) == NULL)
 		return NULL;
 
 	ret = CFMapGet(this, str);
@@ -285,7 +298,7 @@ CFMapGetC(CFMapRef this, const char *key)
 }
 
 Boolean
-CFMapSet(CFMapRef this, CFTypeRef key, CFTypeRef obj)
+CFMapSet(CFMap this, CFType key, CFType obj)
 {
 	uint32_t i, hash, last;
 
@@ -391,12 +404,12 @@ CFMapSet(CFMapRef this, CFTypeRef key, CFTypeRef obj)
 }
 
 Boolean
-CFMapSetC(CFMapRef this, const char *key, CFTypeRef obj)
+CFMapSetC(CFMap this, const char *key, CFType obj)
 {
-	CFStringRef str;
+	CFString str;
 	bool ret;
 
-	if ((str = CFNew(CFStringClass, key)) == NULL)
+	if ((str = CFNew(CFString, key)) == NULL)
 		return false;
 
 	ret = CFMapSet(this, str, obj);
@@ -407,7 +420,7 @@ CFMapSetC(CFMapRef this, const char *key, CFTypeRef obj)
 }
 
 void
-CFMapIter(CFMapRef this, CFMapIter_t *iter)
+CFMapIter(CFMap this, CFMapIter_t *iter)
 {
 	iter->_map = this;
 	iter->_pos = 0;
@@ -418,7 +431,7 @@ CFMapIter(CFMapRef this, CFMapIter_t *iter)
 void
 CFMapIterNext(CFMapIter_t *iter)
 {
-	CFMapRef this = iter->_map;
+	CFMap this = iter->_map;
 
 	for (; iter->_pos < this->size &&
 	    (this->data[iter->_pos] == NULL ||
@@ -435,11 +448,11 @@ CFMapIterNext(CFMapIter_t *iter)
 }
 
 char* 
-CFMapToString(CFTypeRef self)
+CFMapToString(CFType self)
 {
 	static char str[64]; 
 
-	CFMapRef this = self;
+	CFMap this = self;
 	snprintf(str, 63, "CFMap: %u", this->size);
 	return str;
 }
@@ -447,7 +460,7 @@ CFMapToString(CFTypeRef self)
 #ifdef __CoreFX_Advanced_Mode__
 
 void __attribute__((overloadable))
-CFForEach(CFMapRef const this, void (^each)(CFTypeRef, CFTypeRef))
+CFForEach(CFMap const this, void (^each)(CFType, CFType))
 {
 	CFMapIter_t iter;
 	CFMapIter(this, &iter);
@@ -459,7 +472,7 @@ CFForEach(CFMapRef const this, void (^each)(CFTypeRef, CFTypeRef))
 }
 
 void __attribute__((overloadable))
-CFForEach(CFMapRef const this, void (*each)(CFTypeRef, CFTypeRef))
+CFForEach(CFMap const this, void (*each)(CFType, CFType))
 {
 	CFMapIter_t iter;
 	CFMapIter(this, &iter);

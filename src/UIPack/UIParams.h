@@ -31,13 +31,13 @@
 #include "UITypes.h"
 
 typedef struct __UIParams *UIParamsRef;
-extern CFClassRef UIParamsClass;
+extern CFClass UIParamsClass;
 
 Boolean
-UIParamsConstructor(CFTypeRef, va_list);
+UIParamsConstructor(CFType, va_list);
 
 void 
-UIParamsFinalize(CFTypeRef);
+UIParamsFinalize(CFType);
 
 void 
 UIParamsParse(UIParamsRef, int, char **);

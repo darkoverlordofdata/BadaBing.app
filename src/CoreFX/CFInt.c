@@ -28,6 +28,8 @@
 #include "CFObject.h"
 #include "CFInt.h"
 
+static CFTypeID _kCFIntTypeID = 0;
+
 struct __CFInt {
 	struct __CFObject obj;
 	intmax_t value;
@@ -42,12 +44,23 @@ static struct __CFClass class = {
 	.copy = CFIntCopy,
 	.tostr = CFIntToString
 };
-CFClassRef CFIntClass = &class;
+CFClass CFIntClass = &class;
+
+CFTypeID
+CFIntGetTypeID (void)
+{
+  return _kCFIntTypeID;
+}
+
+void CFIntClassInitialize()
+{
+	_kCFIntTypeID = CFRegisterClass(&class);
+}
 
 Boolean 
-CFIntCreate(CFTypeRef self, va_list args)
+CFIntCreate(CFType self, va_list args)
 {
-	CFIntRef this = self;
+	CFInt this = self;
 
 	this->value = va_arg(args, intmax_t);
 
@@ -55,10 +68,10 @@ CFIntCreate(CFTypeRef self, va_list args)
 }
 
 Boolean 
-CFIntEqual(CFTypeRef ptr1, CFTypeRef ptr2)
+CFIntEqual(CFType ptr1, CFType ptr2)
 {
-	CFObjectRef obj2 = ptr2;
-	CFIntRef int1, int2;
+	CFObject obj2 = ptr2;
+	CFInt int1, int2;
 
 	if (obj2->cls != CFIntClass)
 		return false;
@@ -70,31 +83,30 @@ CFIntEqual(CFTypeRef ptr1, CFTypeRef ptr2)
 }
 
 CFHashCode 
-CFIntHash(CFTypeRef self)
+CFIntHash(CFType self)
 {
-	CFIntRef this = self;
-
+	CFInt this = self;
 	return (uint32_t)this->value;
 }
 
-CFTypeRef 
-CFIntCopy(CFTypeRef self)
+CFType 
+CFIntCopy(CFType self)
 {
 	return CFRef(self);
 }
 
 intmax_t 
-CFIntValue(CFIntRef this)
+CFIntValue(CFInt this)
 {
 	return this->value;
 }
 
 char* 
-CFIntToString(CFTypeRef self)
+CFIntToString(CFType self)
 {
 	static char str[64]; 
 
-	CFIntRef this = self;
+	CFInt this = self;
 
 	snprintf(str, 63, "%li", this->value);
 	return str;

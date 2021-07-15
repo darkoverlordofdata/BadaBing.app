@@ -16,7 +16,7 @@ struct __GXTexture2D
     UInt32 mWrapT; // Wrapping mode on T axis
     UInt32 mFilterMin; // Filtering mode if texture pixels < screen pixels
     UInt32 mFilterMag; // Filtering mode if texture pixels > screen pixels
-    CFStringRef mPath;
+    CFString mPath;
 
 };
 
@@ -60,10 +60,10 @@ GXTexture2DImageFormat(GXTexture2DRef this)
 }
 
 Boolean 
-GXTexture2DConstructor(CFTypeRef self, va_list args)
+GXTexture2DConstructor(CFType self, va_list args)
 {
 	GXTexture2DRef this = self;
-    this->mPath = va_arg(args, CFStringRef);
+    this->mPath = va_arg(args, CFString);
     Boolean alpha = va_arg(args, Boolean);
     this->mInternalFormat = alpha ? GL_RGBA : GL_RGB;
     this->mImageFormat = alpha ? GL_RGBA : GL_RGB;
@@ -75,8 +75,8 @@ GXTexture2DConstructor(CFTypeRef self, va_list args)
     return true;
 }
 
-CFStringRef 
-GXTexture2DToString(CFTypeRef self)
+CFString 
+GXTexture2DToString(CFType self)
 {
     return CFStringCreate("GXTexture2D");
 }

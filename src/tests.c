@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <CoreFX/CoreFX.h>
 
-void Each(CFTypeRef key, CFTypeRef obj) 
+void Each(CFType key, CFType obj) 
 {
 	CFLog("\t%@ = %@\n", key, obj);
 }
@@ -35,25 +35,26 @@ void Each(CFTypeRef key, CFTypeRef obj)
 int
 main()
 {
-	CFRefPoolRef pool;
-	CFArrayRef array;
-	CFStringRef str, str2;
-	CFMapRef map;
+	CFRefPool pool;
+	CFArray array;
+	CFString str, str2;
+	CFMap map;
 
-	pool = CFNew(CFRefPoolClass);
+	pool = CFNew(CFRefPool);
 
-	array = CFCreate(CFArrayClass,
+	array = CFCreate(CFArray,
 	    $("Hallo"),
 	    $(" Welt"),
 	    $("!"), 
 		NULL);
 
-	CFForEach(array, ^(int index, CFTypeRef obj) {
+	CFForEach(array, ^(int index, CFType obj) {
 		CFLog("\t%i: %@\n", index, obj);
 
 	});
 
-	str = CFStringNew(NULL);
+	// str = CFStringNew(NULL);
+	str = CFNew(CFString, NULL);
 
 	for (var i = 0; i < CFArraySize(array); i++)
 		CFStringAppend(str, CFArrayGet(array, i));
@@ -62,16 +63,16 @@ main()
 
 	CFLog("%s\n", CFStringC(str));
 
-	pool = CFNew(CFRefPoolClass);
+	pool = CFNew(CFRefPool);
 	str2 = $("ll");
 	CFLog("%i\n", CFStringFind(str, str2, CFRangeAll));
 
 	CFUnRef(pool);
 	CFUnRef(str);
 
-	pool = CFNew(CFRefPoolClass);
+	pool = CFNew(CFRefPool);
 
-	map = CFCreate(CFMapClass,
+	map = CFCreate(CFMap,
 	    $("Hallo"),	$("Welt!"),
 	    $("Test"),	$("success!"),
 	    $("int"), 	$(1234),
@@ -84,7 +85,7 @@ main()
 	CFMapSet(map, $("Hallo"), $("Test"));
 
 	CFLog("{\n");
-	CFForEach(map, ^(CFTypeRef key, CFTypeRef obj) {
+	CFForEach(map, ^(CFType key, CFType obj) {
 		CFLog("\t%@ = %@\n", key, obj);
 	});
 	CFLog("}\n");
@@ -92,7 +93,7 @@ main()
 	CFMapSet(map, $("Hallo"), NULL);
 
 	CFLog("{\n");
-	CFForEach(map, ^(CFTypeRef key, CFTypeRef obj) {
+	CFForEach(map, ^(CFType key, CFType obj) {
 		CFLog("\t%@ = %@\n", key, obj);
 	});
 	CFLog("}\n");
@@ -105,9 +106,13 @@ main()
 
 	CFLog("ff = %$\n", ff);
 
-	let ii = $(1000L);
+	CFInt ii = $(1000L);
 
-	CFLog("ll = %@\n", ii);
+	CFLog("ii = %@\n", ii);
+	
+	CFLog("hash = %i\n", CFIntHash(ii));
+
+	CFLog("%s\n", CFGetClass(ii)->name);
 
 	CFLog("StdIn = %@\n", CFStdIn);
 

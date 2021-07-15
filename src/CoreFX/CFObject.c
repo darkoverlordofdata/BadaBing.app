@@ -25,23 +25,95 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <string.h>
 #include <stdlib.h>
 #include <assert.h>
 
 #include "CFObject.h"
 #include "CFRefPool.h"
 
+static CFTypeID _kCFObjectTypeID = 0;
+void CFArrayClassInitialize();
+void CFBoolClassInitialize();
+void CFBoxClassInitialize();
+void CFDoubleClassInitialize();
+void CFFileClassInitialize();
+void CFIntClassInitialize();
+void CFMapClassInitialize();
+void CFObjectClassInitialize();
+void CFRefPoolClassInitialize();
+void CFSocketClassInitialize();
+void CFStreamClassInitialize();
+void CFStringClassInitialize();
+void CFInitialize (void) __attribute__ ((constructor));
+
+void
+CFInitialize()
+{
+	CFArrayClassInitialize();
+	CFBoolClassInitialize();
+	CFBoxClassInitialize();
+	CFDoubleClassInitialize();
+	CFFileClassInitialize();
+	CFIntClassInitialize();
+	CFMapClassInitialize();
+	CFObjectClassInitialize();
+	CFRefPoolClassInitialize();
+	CFSocketClassInitialize();
+	CFStreamClassInitialize();
+	CFStringClassInitialize();
+}
+
 static struct __CFClass class = {
 	.name = "CFObject",
 	.size = sizeof(struct __CFObject),
 };
-CFClassRef CFObjectClass = &class;
+CFClass CFObjectClass = &class;
 
+static CFClass ClassRegistry[256];
+static int classRegistrySize = 0;
 
-CFTypeRef
-CFNew(CFClassRef class, ...)
+void CFObjectClassInitialize()
 {
-	CFObjectRef this;
+	_kCFObjectTypeID = CFRegisterClass(&class);
+}
+
+CFTypeID
+CFObjectGetTypeID (void)
+{
+  return _kCFObjectTypeID;
+}
+
+CFTypeID
+CFRegisterClass(CFClass cls)
+{
+	ClassRegistry[classRegistrySize] = cls;
+	classRegistrySize += 1;
+	return classRegistrySize;
+}
+
+CFClass 
+CFRegisterGet(CFTypeID index)
+{
+	return ClassRegistry[index];
+}
+
+
+CFClass 
+CFRegisterFind(char* name)
+{
+	for (int i=0; i<classRegistrySize; i++) {
+		if (strcmp(name, ClassRegistry[i]->name) == 0) {
+			return ClassRegistry[i];
+		}
+	}
+	return NULL;
+}
+
+CFType
+CFNewObject(CFClass class, ...)
+{
+	CFObject this;
 
 	if ((this = malloc(class->size)) == NULL)
 		return NULL;
@@ -64,10 +136,10 @@ CFNew(CFClassRef class, ...)
 	return this;
 }
 
-CFTypeRef
-CFCreate(CFClassRef class, ...)
+CFType
+CFCreateObject(CFClass class, ...)
 {
-	CFObjectRef this;
+	CFObject this;
 
 	assert(class != CFRefPoolClass);
 
@@ -97,10 +169,10 @@ CFCreate(CFClassRef class, ...)
 	return this; 
 }
 
-CFTypeRef
-CFRef(CFTypeRef self)
+CFType
+CFRef(CFType self)
 {
-	CFObjectRef this = self;
+	CFObject this = self;
 
 	if (this == NULL)
 		return NULL;
@@ -111,9 +183,9 @@ CFRef(CFTypeRef self)
 }
 
 void
-CFUnRef(CFTypeRef self)
+CFUnRef(CFType self)
 {
-	CFObjectRef this = self;
+	CFObject this = self;
 
 	if (this == NULL)
 		return;
@@ -123,9 +195,9 @@ CFUnRef(CFTypeRef self)
 }
 
 void
-CFFree(CFTypeRef self)
+CFFree(CFType self)
 {
-	CFObjectRef this = self;
+	CFObject this = self;
 
 	if (this == NULL)
 		return;
@@ -136,10 +208,10 @@ CFFree(CFTypeRef self)
 	free(this);
 }
 
-CFClassRef
-CFClass(CFTypeRef self)
+CFClass
+CFGetClass(CFType self)
 {
-	CFObjectRef this = self;
+	CFObject this = self;
 
 	if (this == NULL)
 		return NULL;
@@ -148,9 +220,9 @@ CFClass(CFTypeRef self)
 }
 
 Boolean
-CFIsa(CFTypeRef self, CFClassRef cls)
+CFIsa(CFType self, CFClass cls)
 {
-	CFObjectRef this = self;
+	CFObject this = self;
 
 	if (this == NULL || cls == NULL)
 		return false;
@@ -159,9 +231,9 @@ CFIsa(CFTypeRef self, CFClassRef cls)
 }
 
 Boolean
-CFEqual(CFTypeRef ptr1, CFTypeRef ptr2)
+CFEqual(CFType ptr1, CFType ptr2)
 {
-	CFObjectRef obj1 = ptr1, obj2 = ptr2;
+	CFObject obj1 = ptr1, obj2 = ptr2;
 
 	if (obj1 == obj2)
 		return true;
@@ -176,9 +248,9 @@ CFEqual(CFTypeRef ptr1, CFTypeRef ptr2)
 }
 
 CFHashCode
-CFHash(CFTypeRef self)
+CFHash(CFType self)
 {
-	CFObjectRef this = self;
+	CFObject this = self;
 
 	if (this == NULL)
 		return 0;
@@ -189,10 +261,10 @@ CFHash(CFTypeRef self)
 	return (uint32_t)(uintptr_t)self;
 }
 
-CFTypeRef
-CFCopy(CFTypeRef self)
+CFType
+CFCopy(CFType self)
 {
-	CFObjectRef this = self;
+	CFObject this = self;
 
 	if (this == NULL)
 		return NULL;
@@ -203,8 +275,8 @@ CFCopy(CFTypeRef self)
 	return NULL;
 }
 
-CFStringRef 
-ToString(CFTypeRef self)
+CFString 
+ToString(CFType self)
 {
 	return NULL;
 }

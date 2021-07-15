@@ -5,22 +5,22 @@
 
 typedef struct __GXShader *GXShaderRef;
 
-extern CFClassRef GXShaderClass;
+extern CFClass GXShaderClass;
 
 extern Int32
 GXShaderId(GXShaderRef);
 
 extern Boolean 
-GXShaderConstructor(CFTypeRef, va_list);
+GXShaderConstructor(CFType, va_list);
 
-extern CFStringRef 
-GXShaderToString(CFTypeRef);
+extern CFString 
+GXShaderToString(CFType);
 
 extern GXShaderRef
 GXShaderUse(GXShaderRef);
 
 extern void
-GXShaderCheckCompileErrors(GXShaderRef, Int32, CFStringRef);
+GXShaderCheckCompileErrors(GXShaderRef, Int32, CFString);
 
 extern void
 GXShaderCompile(GXShaderRef, char*, char*);

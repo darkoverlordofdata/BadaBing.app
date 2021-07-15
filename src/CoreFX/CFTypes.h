@@ -46,8 +46,8 @@ typedef uint64_t UInt64;
 typedef float Float32;
 typedef double Float64;
 typedef uint32_t CFHashCode;
-typedef uint32_t CFType;
-typedef void* CFTypeRef;
+typedef uint32_t CFTypeID;
+typedef void* CFType;
 typedef size_t CFSize;
 typedef size_t CFIndex;
 
@@ -80,6 +80,9 @@ typedef size_t CFIndex;
 #define false (_Bool)0
 #define YES true
 #define NO false
+
+#define CFNew(T, args...) CFNewObject(T##Class, ## args)
+#define CFCreate(T, args...) CFCreateObject(T##Class, ## args)
 
 
 /**

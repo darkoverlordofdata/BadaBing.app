@@ -32,7 +32,7 @@ static struct __CFClass class = {
 	.ctor = UIParamsConstructor,
 	.dtor = UIParamsFinalize
 };
-CFClassRef UIParamsClass = &class;
+CFClass UIParamsClass = &class;
 
 /**
  * Constructor
@@ -40,7 +40,7 @@ CFClassRef UIParamsClass = &class;
  * make a new Params object using command line params
  */
 Boolean
-UIParamsConstructor(CFTypeRef self, va_list args)
+UIParamsConstructor(CFType self, va_list args)
 {
     UIParamsRef this = self;
 	int argc = va_arg(args, int);
@@ -56,7 +56,7 @@ UIParamsConstructor(CFTypeRef self, va_list args)
  * dispose of strings
  */
 void 
-UIParamsFinalize(CFTypeRef self)
+UIParamsFinalize(CFType self)
 {
     UIParamsRef this = self;
     free(this->calendar);

@@ -31,10 +31,10 @@
 
 typedef struct __UIFont *UIFontRef;
 
-extern CFClassRef UIFontClass;
+extern CFClass UIFontClass;
 
 Boolean
-UIFontConstructor(CFTypeRef, va_list);
+UIFontConstructor(CFType, va_list);
 
 void 
-UIFontFinalize(CFTypeRef);
+UIFontFinalize(CFType);

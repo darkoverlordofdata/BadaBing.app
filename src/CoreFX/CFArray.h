@@ -28,64 +28,67 @@
 #pragma once
 #include "CFClass.h"
 
-typedef struct __CFArray *CFArrayRef;
+typedef struct __CFArray *CFArray;
 
-extern CFClassRef CFArrayClass;
+extern CFClass CFArrayClass;
 
 extern Boolean 
-CFArrayCreate(CFTypeRef self, va_list args);
+CFArrayCreate(CFType self, va_list args);
 
 extern void 
-CFArrayFinalize(CFTypeRef);
+CFArrayFinalize(CFType);
 
 extern Boolean 
-CFArrayEqual(CFTypeRef, CFTypeRef);
+CFArrayEqual(CFType, CFType);
 
 extern CFHashCode 
-CFArrayHash(CFTypeRef);
+CFArrayHash(CFType);
 
-extern CFTypeRef 
-CFArrayCopy(CFTypeRef);
-
-extern CFSize 
-CFArraySize(CFArrayRef);
-
-extern CFTypeRef 
-CFArrayGet(CFArrayRef, CFSize);
-
-extern Boolean 
-CFArraySet(CFArrayRef, CFSize, CFTypeRef);
-
-extern Boolean 
-CFArrayPush(CFArrayRef, CFTypeRef);
-
-extern CFTypeRef 
-CFArrayLast(CFArrayRef);
-
-extern Boolean 
-CFArrayPop(CFArrayRef);
-
-extern Boolean 
-CFArrayContains(CFArrayRef, CFTypeRef);
-
-extern Boolean 
-CFArrayContainsPtr(CFArrayRef, CFTypeRef);
+extern CFType 
+CFArrayCopy(CFType);
 
 extern CFSize 
-CFArrayFind(CFArrayRef, CFTypeRef);
+CFArraySize(CFArray);
+
+extern CFType 
+CFArrayGet(CFArray, CFSize);
+
+extern Boolean 
+CFArraySet(CFArray, CFSize, CFType);
+
+extern Boolean 
+CFArrayPush(CFArray, CFType);
+
+extern CFType 
+CFArrayLast(CFArray);
+
+extern Boolean 
+CFArrayPop(CFArray);
+
+extern Boolean 
+CFArrayContains(CFArray, CFType);
+
+extern Boolean 
+CFArrayContainsPtr(CFArray, CFType);
 
 extern CFSize 
-CFArrayFindPtr(CFArrayRef, CFTypeRef);
+CFArrayFind(CFArray, CFType);
+
+extern CFSize 
+CFArrayFindPtr(CFArray, CFType);
 
 extern char* 
-CFArrayToString(CFTypeRef self);
+CFArrayToString(CFType self);
+
+extern CFTypeID
+CFArrayGetTypeID (void);
 
 #ifdef __CoreFX_Advanced_Mode__
 
 void __attribute__((overloadable))
-CFForEach(CFArrayRef const this, void (^each)(int, CFTypeRef));
+CFForEach(CFArray const this, void (^each)(int, CFType));
 
 void __attribute__((overloadable))
-CFForEach(CFArrayRef const this, void (*each)(int, CFTypeRef));
+CFForEach(CFArray const this, void (*each)(int, CFType));
 
 #endif

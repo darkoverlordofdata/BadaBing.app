@@ -32,13 +32,13 @@
 #include "UITypes.h"
 
 typedef struct __UIWindow *UIWindowRef;
-extern CFClassRef UIWindowClass;
+extern CFClass UIWindowClass;
 
 Boolean
-UIWindowConstructor(CFTypeRef, va_list);
+UIWindowConstructor(CFType, va_list);
 
 void 
-UIWindowFinalize(CFTypeRef);
+UIWindowFinalize(CFType);
 
 void 
 UIWindowShow(UIWindowRef);

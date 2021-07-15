@@ -29,25 +29,26 @@
 
 #include "CFClass.h"
 
-typedef struct __CFInt *CFIntRef;
-extern CFClassRef CFIntClass;
+typedef struct __CFInt *CFInt;
+extern CFClass CFIntClass;
 
 extern Boolean 
-CFIntCreate(CFTypeRef, va_list);
+CFIntCreate(CFType, va_list);
 
 extern Boolean 
-CFIntEqual(CFTypeRef, CFTypeRef);
+CFIntEqual(CFType, CFType);
 
 extern CFHashCode 
-CFIntHash(CFTypeRef);
+CFIntHash(CFType);
 
-extern CFTypeRef 
-CFIntCopy(CFTypeRef);
+extern CFType 
+CFIntCopy(CFType);
 
 extern intmax_t 
-CFIntValue(CFIntRef);
+CFIntValue(CFInt);
 
 extern char* 
-CFIntToString(CFTypeRef self);
+CFIntToString(CFType self);
 
-
+extern CFTypeID
+CFIntGetTypeID (void);

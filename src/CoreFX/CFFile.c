@@ -55,6 +55,8 @@
 
 #define DEFAULT_MODE S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH
 
+static CFTypeID _kCFFileTypeID = 0;
+
 struct __CFFile {
 	struct __CFStream stream;
 	char* path; 
@@ -70,7 +72,18 @@ static struct __CFClass class = {
 	.dtor = CFFileFinalize,
 	.tostr = CFFileToString
 };
-CFClassRef CFFileClass = &class;
+CFClass CFFileClass = &class;
+
+CFTypeID
+CFFileGetTypeID (void)
+{
+  return _kCFFileTypeID;
+}
+
+void CFFileClassInitialize()
+{
+	_kCFFileTypeID = CFRegisterClass(&class);
+}
 
 static int
 parse_mode(const char *mode)
@@ -104,9 +117,9 @@ parse_mode(const char *mode)
 }
 
 static ssize_t
-file_read(CFTypeRef self, CFTypeRef buf, CFSize len)
+file_read(CFType self, CFType buf, CFSize len)
 {
-	CFFileRef this = self;
+	CFFile this = self;
 	CFSize ret;
 
 	if ((ret = read(this->fd, buf, len)) == 0)
@@ -116,9 +129,9 @@ file_read(CFTypeRef self, CFTypeRef buf, CFSize len)
 }
 
 static bool
-file_write(CFTypeRef self, const void* buf, CFSize len)
+file_write(CFType self, const void* buf, CFSize len)
 {
-	CFFileRef this = self;
+	CFFile this = self;
 	CFSize ret;
 
 	if ((ret = write(this->fd, buf, len)) < len)
@@ -128,17 +141,17 @@ file_write(CFTypeRef self, const void* buf, CFSize len)
 }
 
 static bool
-file_at_end(CFTypeRef self)
+file_at_end(CFType self)
 {
-	CFFileRef this = self;
+	CFFile this = self;
 
 	return this->at_end;
 }
 
 static void
-file_close(CFTypeRef self)
+file_close(CFType self)
 {
-	CFFileRef this = self;
+	CFFile this = self;
 
 	close(this->fd);
 }
@@ -151,9 +164,9 @@ static struct CFStreamOps stream_ops = {
 };
 
 Boolean 
-CFFileCreate(CFTypeRef self, va_list args)
+CFFileCreate(CFType self, va_list args)
 {
-	CFFileRef this = self;
+	CFFile this = self;
 	const char *path = va_arg(args, const char*);
 	const char *mode = va_arg(args, const char*);
 	int flags;
@@ -176,9 +189,9 @@ CFFileCreate(CFTypeRef self, va_list args)
 }
 
 void 
-CFFileFinalize(CFTypeRef self)
+CFFileFinalize(CFType self)
 {
-	CFFileRef this = self;
+	CFFile this = self;
 	if (this->useCtor) {
 		free(this->path);
 	}
@@ -225,16 +238,16 @@ static struct __CFFile CFStdErr_ = {
 	.at_end = false
 };
 
-CFFileRef CFStdIn = &CFStdIn_;
-CFFileRef CFStdOut = &CFStdOut_;
-CFFileRef CFStdErr = &CFStdErr_;
+CFFile CFStdIn = &CFStdIn_;
+CFFile CFStdOut = &CFStdOut_;
+CFFile CFStdErr = &CFStdErr_;
 
 char* 
-CFFileToString(CFTypeRef self)
+CFFileToString(CFType self)
 {
 	static char str[64]; 
 
-	CFFileRef this = self;
+	CFFile this = self;
 	snprintf(str, 63, "CFFile: %s", this->path);
 	return str;
 }

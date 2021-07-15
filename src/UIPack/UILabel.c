@@ -44,7 +44,7 @@ static struct __CFClass class = {
 	.ctor = UILabelConstructor,
 	.dtor = UILabelFinalize
 };
-CFClassRef UILabelClass = &class;
+CFClass UILabelClass = &class;
 
 
 void 
@@ -60,7 +60,7 @@ UILabelDraw(UILabelRef this) {
 }
 
 Boolean
-UILabelConstructor(CFTypeRef self, va_list args)
+UILabelConstructor(CFType self, va_list args)
 {
     UILabelRef this = self;
     const int x = va_arg(args, int);
@@ -76,7 +76,7 @@ UILabelConstructor(CFTypeRef self, va_list args)
 }
 
 void 
-UILabelFinalize(CFTypeRef self)
+UILabelFinalize(CFType self)
 {
     UILabelRef this = self;
     if (this->text != NULL) free(this->text);

@@ -13,7 +13,7 @@ static struct __CFClass class = {
 	.class = CFClass,
     .tostr = GXShaderToString
 };
-CFClassRef GXShaderClass = &class;
+CFClass GXShaderClass = &class;
 
 Int32   GXGameId     (GXShaderRef this) { return this->mId; }
 
@@ -30,13 +30,13 @@ GXShaderCreate()
 }
 
 Boolean 
-GXShaderConstructor(CFTypeRef self, va_list args)
+GXShaderConstructor(CFType self, va_list args)
 {
     return true;
 }
 
-CFStringRef 
-GXShaderToString(CFTypeRef this)
+CFString 
+GXShaderToString(CFType this)
 {
     return CFStringCreate("GXShader"); 
 }
@@ -49,7 +49,7 @@ GXShaderUse(GXShaderRef this)
 }
 
 void
-GXShaderCheckCompileErrors(GXShaderRef this, Int32 object, CFStringRef type);
+GXShaderCheckCompileErrors(GXShaderRef this, Int32 object, CFString type);
 {
     GLint success;
     GLchar infoLog[1024];

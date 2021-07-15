@@ -60,6 +60,7 @@
 #include "CFString.h"
 #include "CFSocket.h"
 
+
 #ifdef __CoreFX_Advanced_Mode__
 /**
  *
@@ -67,33 +68,33 @@
  *
  */
 
-static inline CFStringRef __attribute__((overloadable))$(char* str)
+static inline CFString __attribute__((overloadable))$(char* str)
 {
-	return CFCreate(CFStringClass, str);
+	return CFStringCreate(str);
 }
 
-static inline CFBoolRef __attribute__((overloadable))$(_Bool b)
+static inline CFBool __attribute__((overloadable))$(_Bool b)
 {
-	return CFCreate(CFBoolClass, b);
+	return CFCreate(CFBool, b);
 }
 
 
-static inline CFIntRef __attribute__((overloadable))$(int i)
+static inline CFInt __attribute__((overloadable))$(int i)
 {
-	return CFCreate(CFIntClass, i);
+	return CFCreate(CFInt, i);
 }
 
-static inline CFIntRef __attribute__((overloadable))$(long i)
+static inline CFInt __attribute__((overloadable))$(long i)
 {
-	return CFCreate(CFIntClass, i);
+	return CFCreate(CFInt, i);
 }
 
-static inline CFDoubleRef __attribute__((overloadable))$(double f)
+static inline CFDouble __attribute__((overloadable))$(double f)
 {
-	return CFCreate(CFDoubleClass, f);
+	return CFCreate(CFDouble, f);
 }
 
-static inline CFTypeRef __attribute__((overloadable))$(CFTypeRef o)
+static inline CFType __attribute__((overloadable))$(CFType o)
 {
 	return o;//CFCreate(CFDoubleClass, f);
 }

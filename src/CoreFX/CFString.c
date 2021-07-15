@@ -34,6 +34,8 @@
 #include "CFString.h"
 #include "CFHash.h"
 
+static CFTypeID _kCFStringTypeID = 0;
+
 struct __CFString {
 	struct __CFObject obj;
 	char *data;
@@ -51,19 +53,30 @@ static struct __CFClass class = {
 	.copy = CFStringCopy,
 	.tostr = CFStringToString
 };
-CFClassRef CFStringClass = &class;
+CFClass CFStringClass = &class;
 
-
-CFStringRef 
-CFStringNew(const char* value)
+CFTypeID
+CFStringGetTypeID (void)
 {
-	return CFNew(CFStringClass, value);
+  return _kCFStringTypeID;
 }
 
-CFStringRef 
+void CFStringClassInitialize()
+{
+	_kCFStringTypeID = CFRegisterClass(&class);
+}
+
+
+CFString 
+CFStringNew(const char* value)
+{
+	return CFNew(CFString, value);
+}
+
+CFString 
 CFStringCreate(const char* value)
 {
-	return CFCreate(CFStringClass, value);
+	return CFCreate(CFString, value);
 }
 
 
@@ -112,9 +125,9 @@ CFStrndup(const char *s, CFSize max)
 }
 
 Boolean 
-CFStringConstructor(CFTypeRef self, va_list args)
+CFStringConstructor(CFType self, va_list args)
 {
-	CFStringRef this = self;
+	CFString this = self;
 	const char *cstr = va_arg(args, const char*);
 
 	if (cstr != NULL) {
@@ -132,22 +145,25 @@ CFStringConstructor(CFTypeRef self, va_list args)
 }
 
 void 
-CFStringFinalize(CFTypeRef self)
+CFStringFinalize(CFType self)
 {
-	CFStringRef this = self;
+	CFString this = self;
 
 	if (this->data != NULL)
 		free(this->data);
 }
 
 Boolean 
-CFStringEqual(CFTypeRef ptr1, CFTypeRef ptr2)
+CFStringEqual(CFType ptr1, CFType ptr2)
 {
-	CFObjectRef obj2 = ptr2;
-	CFStringRef str1, str2;
+	CFObject obj2 = ptr2;
+	CFString str1, str2;
 
-	if (obj2->cls != CFStringClass)
+	if (obj2->cls != CFRegisterGet(_kCFStringTypeID))
 		return false;
+
+	// if (obj2->cls != CFStringClass)
+	// 	return false;
 
 	str1 = ptr1;
 	str2 = ptr2;
@@ -159,9 +175,9 @@ CFStringEqual(CFTypeRef ptr1, CFTypeRef ptr2)
 }
 
 CFHashCode 
-CFStringHash(CFTypeRef self)
+CFStringHash(CFType self)
 {
-	CFStringRef this = self;
+	CFString this = self;
 	CFSize i;
 	uint32_t hash;
 
@@ -175,13 +191,13 @@ CFStringHash(CFTypeRef self)
 	return hash;
 }
 
-CFTypeRef 
-CFStringCopy(CFTypeRef self)
+CFType 
+CFStringCopy(CFType self)
 {
-	CFStringRef this = self;
-	CFStringRef new;
+	CFString this = self;
+	CFString new;
 
-	if ((new = CFNew(CFStringClass, (void*)NULL)) == NULL)
+	if ((new = CFNew(CFString, (void*)NULL)) == NULL)
 		return NULL;
 
 	if ((new->data = malloc(this->len + 1)) == NULL) {
@@ -196,26 +212,26 @@ CFStringCopy(CFTypeRef self)
 }
 
 char*
-CFStringToString(CFTypeRef self)
+CFStringToString(CFType self)
 {
 	
-	return ((CFStringRef)self)->data;
+	return ((CFString)self)->data;
 }
 
 char*
-CFStringC(CFStringRef this)
+CFStringC(CFString this)
 {
 	return this->data;
 }
 
 CFSize
-CFStringLength(CFStringRef string)
+CFStringLength(CFString string)
 {
 	return string->len;
 }
 
 Boolean
-CFStringSet(CFStringRef this, const char *cstr)
+CFStringSet(CFString this, const char *cstr)
 {
 	char *copy;
 	CFSize len;
@@ -240,7 +256,7 @@ CFStringSet(CFStringRef this, const char *cstr)
 }
 
 void
-CFStringSetNocopy(CFStringRef this, char *cstr, CFSize len)
+CFStringSetNocopy(CFString this, char *cstr, CFSize len)
 {
 	if (this->data != NULL)
 		free(this->data);
@@ -250,7 +266,7 @@ CFStringSetNocopy(CFStringRef this, char *cstr, CFSize len)
 }
 
 Boolean
-CFStringAppend(CFStringRef this, CFStringRef append)
+CFStringAppend(CFString this, CFString append)
 {
 	char *new;
 
@@ -270,7 +286,7 @@ CFStringAppend(CFStringRef this, CFStringRef append)
 }
 
 Boolean
-CFStringAppendC(CFStringRef this, const char *append)
+CFStringAppendC(CFString this, const char *append)
 {
 	char *new;
 	CFSize append_len;
@@ -293,7 +309,7 @@ CFStringAppendC(CFStringRef this, const char *append)
 }
 
 Boolean
-CFStringHasPrefix(CFStringRef this, CFStringRef prefix)
+CFStringHasPrefix(CFString this, CFString prefix)
 {
 	if (prefix->len > this->len)
 		return false;
@@ -302,7 +318,7 @@ CFStringHasPrefix(CFStringRef this, CFStringRef prefix)
 }
 
 Boolean
-CFStringHasPrefixC(CFStringRef this, const char *prefix)
+CFStringHasPrefixC(CFString this, const char *prefix)
 {
 	CFSize prefix_len = strlen(prefix);
 
@@ -313,7 +329,7 @@ CFStringHasPrefixC(CFStringRef this, const char *prefix)
 }
 
 Boolean
-CFStringHasSuffix(CFStringRef this, CFStringRef suffix)
+CFStringHasSuffix(CFString this, CFString suffix)
 {
 	if (suffix->len > this->len)
 		return false;
@@ -322,7 +338,7 @@ CFStringHasSuffix(CFStringRef this, CFStringRef suffix)
 }
 
 Boolean
-CFStringHasSuffixC(CFStringRef this, const char *suffix)
+CFStringHasSuffixC(CFString this, const char *suffix)
 {
 	CFSize suffix_len = strlen(suffix);
 
@@ -333,7 +349,7 @@ CFStringHasSuffixC(CFStringRef this, const char *suffix)
 }
 
 CFSize
-CFStringFind(CFStringRef this, CFStringRef substr, CFRange_t range)
+CFStringFind(CFString this, CFString substr, CFRange_t range)
 {
 	CFSize i;
 
@@ -355,7 +371,7 @@ CFStringFind(CFStringRef this, CFStringRef substr, CFRange_t range)
 }
 
 CFSize
-CFStringFindC(CFStringRef this, const char *substr, CFRange_t range)
+CFStringFindC(CFString this, const char *substr, CFRange_t range)
 {
 	CFSize substr_len = strlen(substr);
 	CFSize i;

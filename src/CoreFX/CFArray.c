@@ -32,6 +32,9 @@
 #include "CFArray.h"
 #include "CFHash.h"
 
+
+static CFTypeID _kCFArrayTypeID = 0;
+
 struct __CFArray {
 	struct __CFObject obj;
 	void **data;
@@ -46,27 +49,29 @@ static struct __CFClass class = {
 	.equal = CFArrayEqual,
 	.hash = CFArrayHash,
 	.copy = CFArrayCopy,
-	.class = CFClass,
+	.class = CFGetClass,
 	.tostr = CFArrayToString
 
 };
-CFClassRef CFArrayClass = &class;
+CFClass CFArrayClass = &class;
 
-typedef CFArrayRef (*CFAlloc_t)(CFTypeRef cf, ...);
-
-CFArrayRef 
-CFArrayNew(CFAlloc_t f, va_list args)
+CFTypeID
+CFArrayGetTypeID (void)
 {
-	CFArrayRef o = f(CFArrayClass);
-	CFArrayCreate(o, args);
-	return o;
+  return _kCFArrayTypeID;
 }
-// x = CFArrayCreate(CFNew, a, b, c);
+
+void CFArrayClassInitialize()
+{
+	_kCFArrayTypeID = CFRegisterClass(&class);
+}
+
+typedef CFArray (*CFAlloc_t)(CFType cf, ...);
 
 Boolean 
-CFArrayCreate(CFTypeRef self, va_list args)
+CFArrayCreate(CFType self, va_list args)
 {
-	CFArrayRef this = self;
+	CFArray this = self;
 	void *obj;
 
 	this->data = NULL;
@@ -80,9 +85,9 @@ CFArrayCreate(CFTypeRef self, va_list args)
 }
 
 void 
-CFArrayFinalize(CFTypeRef self)
+CFArrayFinalize(CFType self)
 {
-	CFArrayRef this = self;
+	CFArray this = self;
 	size_t i;
 
 	for (i = 0; i < this->size; i++)
@@ -93,10 +98,10 @@ CFArrayFinalize(CFTypeRef self)
 }
 
 Boolean 
-CFArrayEqual(CFTypeRef ptr1, CFTypeRef ptr2)
+CFArrayEqual(CFType ptr1, CFType ptr2)
 {
-	CFObjectRef obj2 = ptr2;
-	CFArrayRef array1, array2;
+	CFObject obj2 = ptr2;
+	CFArray array1, array2;
 	size_t i;
 
 	if (obj2->cls != CFArrayClass)
@@ -116,9 +121,9 @@ CFArrayEqual(CFTypeRef ptr1, CFTypeRef ptr2)
 }
 
 CFHashCode 
-CFArrayHash(CFTypeRef self)
+CFArrayHash(CFType self)
 {
-	CFArrayRef this = self;
+	CFArray this = self;
 	size_t i;
 	uint32_t hash;
 
@@ -132,14 +137,14 @@ CFArrayHash(CFTypeRef self)
 	return hash;
 }
 
-CFTypeRef 
-CFArrayCopy(CFTypeRef self)
+CFType 
+CFArrayCopy(CFType self)
 {
-	CFArrayRef this = self;
-	CFArrayRef new;
+	CFArray this = self;
+	CFArray new;
 	size_t i;
 
-	if ((new = CFNew(CFArrayClass, (void*)NULL)) == NULL)
+	if ((new = CFNew(CFArray, (void*)NULL)) == NULL)
 		return NULL;
 
 	if ((new->data = malloc(sizeof(void*) * this->size)) == NULL) {
@@ -154,8 +159,8 @@ CFArrayCopy(CFTypeRef self)
 	return new;
 }
 
-CFTypeRef
-CFArrayGet(CFArrayRef this, size_t index)
+CFType
+CFArrayGet(CFArray this, size_t index)
 {
 	if (index >= this->size)
 		return NULL;
@@ -164,16 +169,16 @@ CFArrayGet(CFArrayRef this, size_t index)
 }
 
 CFSize
-CFArraySize(CFArrayRef this)
+CFArraySize(CFArray this)
 {
 	return this->size;
 }
 
 Boolean
-CFArraySet(CFArrayRef this, size_t index, CFTypeRef self)
+CFArraySet(CFArray this, size_t index, CFType self)
 {
-	CFObjectRef obj = self;
-	CFObjectRef old;
+	CFObject obj = self;
+	CFObject old;
 
 	if (index >= this->size)
 		return false;
@@ -187,9 +192,9 @@ CFArraySet(CFArrayRef this, size_t index, CFTypeRef self)
 }
 
 Boolean
-CFArrayPush(CFArrayRef this, CFTypeRef self)
+CFArrayPush(CFArray this, CFType self)
 {
-	CFObjectRef obj = self;
+	CFObject obj = self;
 	void **new;
 
 	if (this->data == NULL)
@@ -208,8 +213,8 @@ CFArrayPush(CFArrayRef this, CFTypeRef self)
 	return true;
 }
 
-CFTypeRef
-CFArrayLast(CFArrayRef this)
+CFType
+CFArrayLast(CFArray this)
 {
 	if (this->size == 0)
 		return NULL;
@@ -218,7 +223,7 @@ CFArrayLast(CFArrayRef this)
 }
 
 Boolean
-CFArrayPop(CFArrayRef this)
+CFArrayPop(CFArray this)
 {
 	void **new;
 	void *last;
@@ -249,7 +254,7 @@ CFArrayPop(CFArrayRef this)
 }
 
 Boolean
-CFArrayContains(CFArrayRef this, CFTypeRef self)
+CFArrayContains(CFArray this, CFType self)
 {
 	size_t i;
 
@@ -261,7 +266,7 @@ CFArrayContains(CFArrayRef this, CFTypeRef self)
 }
 
 Boolean
-CFArrayContainsPtr(CFArrayRef this, CFTypeRef self)
+CFArrayContainsPtr(CFArray this, CFType self)
 {
 	size_t i;
 
@@ -273,7 +278,7 @@ CFArrayContainsPtr(CFArrayRef this, CFTypeRef self)
 }
 
 CFSize
-CFArrayFind(CFArrayRef this, CFTypeRef self)
+CFArrayFind(CFArray this, CFType self)
 {
 	size_t i;
 
@@ -285,7 +290,7 @@ CFArrayFind(CFArrayRef this, CFTypeRef self)
 }
 
 CFSize
-CFArrayFindPtr(CFArrayRef this, CFTypeRef self)
+CFArrayFindPtr(CFArray this, CFType self)
 {
 	size_t i;
 
@@ -298,11 +303,11 @@ CFArrayFindPtr(CFArrayRef this, CFTypeRef self)
 
 
 char* 
-CFArrayToString(CFTypeRef self)
+CFArrayToString(CFType self)
 {
 	static char str[64]; 
 
-	CFArrayRef this = self;
+	CFArray this = self;
 	snprintf(str, 63, "CFArray: %li", this->size);
 	return str;
 }
@@ -310,7 +315,7 @@ CFArrayToString(CFTypeRef self)
 #ifdef __CoreFX_Advanced_Mode__
 
 void __attribute__((overloadable))
-CFForEach(CFArrayRef const this, void (^each)(int, CFTypeRef))
+CFForEach(CFArray const this, void (^each)(int, CFType))
 {
 	for (int i=0; i<this->size; i++) 
 	{
@@ -319,7 +324,7 @@ CFForEach(CFArrayRef const this, void (^each)(int, CFTypeRef))
 }
 
 void __attribute__((overloadable))
-CFForEach(CFArrayRef const this, void (*each)(int, CFTypeRef))
+CFForEach(CFArray const this, void (*each)(int, CFType))
 {
 	for (int i=0; i<this->size; i++) 
 	{

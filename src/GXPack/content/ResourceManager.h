@@ -7,17 +7,17 @@
 
 typedef struct __GXResourceManager *GXResourceManagerRef;
 
-extern CFClassRef GXResourceManagerClass;
+extern CFClass GXResourceManagerClass;
 
-extern CFMapRef
+extern CFMap
 GXResourceManagerShaders(GXResourceManagerRef);
 
-extern CFMapRef
+extern CFMap
 GXResourceManagerTexturess(GXResourceManagerRef);
 
 extern GXShader
 GXResourceManagerLoadShader(GXResourceManagerRef,
-    CFStringRef, CFStringRef, CFStringRef)
+    CFString, CFString, CFString)
     
 
 + (Shader*)GetShader:(NSString*)name;

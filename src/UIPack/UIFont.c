@@ -46,11 +46,11 @@ static struct __CFClass class = {
 	.ctor = UIFontConstructor,
 	.dtor = UIFontFinalize
 };
-CFClassRef UIFontClass = &class;
+CFClass UIFontClass = &class;
 
 
 Boolean
-UIFontConstructor(CFTypeRef self, va_list args)
+UIFontConstructor(CFType self, va_list args)
 {
     UIFontRef this = self;
 	const char* name = va_arg(args, char*);
@@ -62,7 +62,7 @@ UIFontConstructor(CFTypeRef self, va_list args)
 }
 
 void 
-UIFontFinalize(CFTypeRef self)
+UIFontFinalize(CFType self)
 {
     UIFontRef this = self;
     if (this->name != NULL) free(this->name);

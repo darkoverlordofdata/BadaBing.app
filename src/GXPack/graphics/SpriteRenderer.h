@@ -7,10 +7,10 @@
 
 typedef struct __GXSpriteRenderer *GXSpriteRendererRef;
 
-extern CFClassRef GXSpriteRendererClass;
+extern CFClass GXSpriteRendererClass;
 
 extern Boolean 
-GXSpriteRendererConstructor(CFTypeRef, va_list);
+GXSpriteRendererConstructor(CFType, va_list);
 
 extern GXSpriteRendererRef
 GXSpriteRendererNew(GXShaderRef);
@@ -21,7 +21,7 @@ GXSpriteRendererCreate(GXShaderRef);
 extern void
 GXSpriteRendererInitRenderData(GXSpriteRendererRef);
 
-extern CFStringRef
+extern CFString
 GXSpriteRendererToString(GXSpriteRendererRef);
 
 extern void

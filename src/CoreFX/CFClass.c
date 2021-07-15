@@ -28,7 +28,7 @@
 #include "CFClass.h"
 
 const char*
-CFClassName(CFClassRef cls)
+CFClassName(CFClass cls)
 {
 	return cls->name;
 }
