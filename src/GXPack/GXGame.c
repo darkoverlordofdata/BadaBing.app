@@ -67,12 +67,12 @@ CFString GXGameTitle (GXGameRef this) { return this->mTitle; }
 
 GXGameRef GXGameNew(char* title, int width, int height, CFType subclass, GXGameVTable* vtbl)
 {
-    return CFNew(GXGameClass, title, width, height, subclass, vtbl);
+    return CFNewObject(GXGameClass, title, width, height, subclass, vtbl);
 }
 
 GXGameRef GXGameCreate(char* title, int width, int height, CFType subclass, GXGameVTable* vtbl)
 {
-    return CFCreate(GXGameClass, title, width, height, subclass, vtbl);
+    return CFCreateObject(GXGameClass, title, width, height, subclass, vtbl);
 }
 
 

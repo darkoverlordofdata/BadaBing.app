@@ -52,12 +52,12 @@ UIApplicationConstructor(CFType self, va_list args)
 	int argc = va_arg(args, int);
     char **argv = va_arg(args, char **);
 
-	this->params = CFCreate(UIParams, argc, argv);
-	this->window = CFCreate(UIWindow, this);
+	this->params = CFCreateObject(UIParamsClass, argc, argv);
+	this->window = CFCreateObject(UIWindowClass, this);
 
 	char cwd[1024];
 	getcwd(cwd, sizeof(cwd));
-	this->cwd =CFCreate(CFString, cwd);
+	this->cwd =CFCreateObject(CFStringClass, cwd);
 
 	return true;
 }

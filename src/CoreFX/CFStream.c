@@ -147,7 +147,7 @@ CFStreamReadLine(CFType self)
 				if (ret_str == NULL)
 					return NULL;
 
-				ret = CFCreate(CFString, (void*)NULL);
+				ret = CFStringCreate((void*)NULL);
 				if (ret == NULL) {
 					free(ret_str);
 					return NULL;
@@ -193,7 +193,7 @@ CFStreamReadLine(CFType self)
 			if (ret_str == NULL)
 				return NULL;
 
-			ret = CFCreate(CFString, (void*)NULL);
+			ret = CFStringCreate((void*)NULL);
 			if (ret == NULL) {
 				free(ret_str);
 				return NULL;
@@ -233,7 +233,7 @@ CFStreamReadLine(CFType self)
 					ret_len--;
 				ret_str[ret_len] = '\0';
 
-				ret = CFCreate(CFString, (void*)NULL);
+				ret = CFStringCreate((void*)NULL);
 				if (ret == NULL) {
 					free(buf);
 					free(ret_str);

@@ -42,4 +42,4 @@ extern CFType
 CFBoxPtr(CFBox);
 
 extern CFTypeID
-CFBoxGetTypeID (void);
+CFBoxType (CFBox this);

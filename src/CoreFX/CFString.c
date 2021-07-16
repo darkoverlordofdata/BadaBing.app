@@ -70,13 +70,13 @@ void CFStringClassInitialize()
 CFString 
 CFStringNew(const char* value)
 {
-	return CFNew(CFString, value);
+	return CFNewObject(CFStringClass, value);
 }
 
 CFString 
 CFStringCreate(const char* value)
 {
-	return CFCreate(CFString, value);
+	return CFCreateObject(CFStringClass, value);
 }
 
 
@@ -197,7 +197,7 @@ CFStringCopy(CFType self)
 	CFString this = self;
 	CFString new;
 
-	if ((new = CFNew(CFString, (void*)NULL)) == NULL)
+	if ((new = CFNewObject(CFStringClass, (void*)NULL)) == NULL)
 		return NULL;
 
 	if ((new->data = malloc(this->len + 1)) == NULL) {

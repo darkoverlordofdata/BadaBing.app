@@ -28,13 +28,13 @@ GXSpriteRendererConstructor(CFType self, va_list args)
 extern GXSpriteRendererRef
 GXSpriteRendererNew(GXShaderRef shader);
 {
-    return CFNew(GXSpriteRendererClass, shader);
+    return CFNewObject(GXSpriteRendererClass, shader);
 }
 
 extern GXSpriteRendererRef
 GXSpriteRendererCreate(GXShaderRef shader)
 {
-    return CFCreate(GXSpriteRendererClass, shader);
+    return CFCreateObject(GXSpriteRendererClass, shader);
 }
 
 void

@@ -20,13 +20,13 @@ Int32   GXGameId     (GXShaderRef this) { return this->mId; }
 GXShaderRef 
 GXShaderNew()
 {
-    return CFNew(GXShaderClass);
+    return CFNewObject(GXShaderClass);
 }
 
 GXShaderRef 
 GXShaderCreate()
 {
-    return CFCreate(GXShaderClass);
+    return CFCreateObject(GXShaderClass);
 }
 
 Boolean 

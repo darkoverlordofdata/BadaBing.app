@@ -97,8 +97,8 @@ CFBoxPtr(CFBox this)
 	return this->self;
 }
 
-uint32_t
-CFBoxTypeID(CFBox this)
+CFTypeID
+CFBoxType(CFBox this)
 {
 	return this->type;
 }

@@ -114,7 +114,7 @@ CFArrayCopy(CFType self)
 	CFArray new;
 	size_t i;
 
-	if ((new = CFNew(CFArray, (void*)NULL)) == NULL)
+	if ((new = CFArrayNew()) == NULL)
 		return NULL;
 
 	if ((new->data = malloc(sizeof(void*) * this->size)) == NULL) {
@@ -157,22 +157,22 @@ void CFArrayClassInitialize()
 CFArray 
 CFArrayCreate()
 {
-	// return CFCreateObject(CFArrayClass);
-	return CFCreateObject(CFRegisterGet(CFArrayGetTypeID()));
+	return CFCreateObject(CFArrayClass);
+	// return CFCreateObject(CFRegisterGet(CFArrayGetTypeID()));
 }
 
 CFArray 
 CFArrayNew()
 {
-	// return CFNewObject(CFArrayClass);
-	return CFNewObject(CFRegisterGet(CFArrayGetTypeID()));
+	return CFNewObject(CFArrayClass);
+	// return CFNewObject(CFRegisterGet(CFArrayGetTypeID()));
 }
 
 CFArray 
 CFArrayCreateWith(CFType first, ...)
 {
 	// CFArray this = CFCreateObject(CFRegisterGet(CFArrayGetTypeID()));
-	CFArray this = Create(CFArray);
+	CFArray this = CFCreateObject(CFArrayClass);
 	
 	va_list args;
 	va_start(args, first);

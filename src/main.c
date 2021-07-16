@@ -30,9 +30,9 @@
 
 int main(int argc, char **argv) {
 
-	CFRefPool pool = CFNew(CFRefPool);
+	CFRefPool pool = CFNewObject(CFRefPoolClass);
 
-    UIApplicationRef app = CFCreate(UIApplication, argc, argv);
+    UIApplicationRef app = CFCreateObject(UIApplicationClass, argc, argv);
 
     // CFLog("CWD: %s\n", CFStringC(UIApplicationGetCwd(app)));
     CFLog("CWD: %@\n", UIApplicationGetCwd(app));

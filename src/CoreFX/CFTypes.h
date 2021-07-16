@@ -51,6 +51,25 @@ typedef void* CFType;
 typedef size_t CFSize;
 typedef size_t CFIndex;
 
+extern CFTypeID CFArrayTypeID;
+extern CFTypeID CFBitVectorTypeID;
+extern CFTypeID CFBoolTypeID;
+extern CFTypeID CFBoxTypeID;
+extern CFTypeID CFClassTypeID;
+extern CFTypeID CFDateTypeID;
+extern CFTypeID CFDoubleTypeID;
+extern CFTypeID CFFileTypeID;
+extern CFTypeID CFIntTypeID;
+extern CFTypeID CFListTypeID;
+extern CFTypeID CFMapTypeID;
+extern CFTypeID CFObjectTypeID;
+extern CFTypeID CFRangeTypeID;
+extern CFTypeID CFRefPoolTypeID;
+extern CFTypeID CFSocketTypeID;
+extern CFTypeID CFStreamTypeID;
+extern CFTypeID CFStringTypeID;
+extern CFTypeID CFUUIDTypeID;
+
 /**
  *  MACRO Min
  *      cache results of calculation in pocket scope 
@@ -81,11 +100,9 @@ typedef size_t CFIndex;
 #define YES true
 #define NO false
 
-#define CFNew(T, args...) CFNewObject(T##Class, ## args)
-#define CFCreate(T, args...) CFCreateObject(T##Class, ## args)
 
-#define Create(T, args...) CFCreateObject(CFRegisterGet(T##GetTypeID(), ## args))
-#define New(T, args...) CFNewObject(CFRegisterGet(T##GetTypeID(), ## args))
+#define CFCreate(T, args...) CFCreateObject(CFRegisterGet(T##GetTypeID()), ## args)
+#define CFNew(T, args...) CFNewObject(CFRegisterGet(T##GetTypeID()), ## args)
 /**
  *
  * Advanced Mode includes  type inference
@@ -97,93 +114,6 @@ typedef size_t CFIndex;
 #define var __auto_type
 #define let const var
 
-// static inline Boolean* NewBoolean(bool const value){
-//     return CFCreate(CFBooleanClass, value);
-// }
-// static inline Char* NewChar(char const value) {
-//     return CFCreate(CFBooleanClass, value);
-// }
-// static inline String* NewString(char* const value) {
-//     return CFCreate(CFBooleanClass, value);
-// }
-
-// static inline Short* NewShort(short const value) {
-//     return CFCreate(CFBooleanClass, value);
-// }
-
-// static inline Integer* NewInteger(int const value) {
-//     return CFCreate(CFBooleanClass, value);
-// }
-
-// static inline Long* NewLong(long const value) {
-//     return CFCreate(CFBooleanClass, value);
-// }
-
-// static inline Float* NewFloat(float const value) {
-//     return CFCreate(CFBooleanClass, value);
-// }
-
-// static inline Double* NewDouble(double const value) {
-//     return CFCreate(CFBooleanClass, value);
-// }
-
-// /**
-//  *  MACRO $
-//  *      Wrap a primitive type in a Object*
-//  */
-// #define _(T) _Generic((T),                                              \
-//                                                                         \
-//         _Bool:              NewBoolean,                                 \
-//         char:               NewChar,                                    \
-//         signed char:        NewChar,                                    \
-//         const char *:       NewString,                                  \
-//         char *:             NewString,                                  \
-//         short int:          NewShort,                                   \
-//         unsigned short int: NewShort,                                   \
-//         unsigned int:       NewInteger,                                 \
-//         long int:           NewLong,                                    \
-//         unsigned long int:  NewLong,                                    \
-//         int:                NewInteger,                                 \
-//         float:              NewFloat,                                   \
-//         double:             NewDouble,                                  \
-//         default:            NewString)(T)
-
-
-
-/**
- *  MACRO typeof
- *      return the typename of T
- */
-#define typeof(T) \
-    _Generic((T),        /* wrap a primitive type */                    \
-                                                                        \
-        _Bool: "bool",                                                  \
-        unsigned char: "unsigned char",                                 \
-        char: "char",                                                   \
-        signed char: "signed char",                                     \
-        short int: "short int",                                         \
-        unsigned short int: "unsigned short int",                       \
-        int: "int",                                                     \
-        unsigned int: "unsigned int",                                   \
-        long int: "long int",                                           \
-        unsigned long int: "unsigned long int",                         \
-        long long int: "long long int",                                 \
-        unsigned long long int: "unsigned long long int",               \
-        float: "float",                                                 \
-        double: "double",                                               \
-        long double: "long double",                                     \
-        char *: "pointer to char",                                      \
-        void *: "pointer to void",                                      \
-        int *: "pointer to int",                                        \
-        const char *: "const pointer to char",                          \
-        CFObject *: "Object",                                           \
-        CFBoolean *: "Boolean",                                         \
-        CFDouble *: "Double",                                           \
-        CFInt *: "Integer",                                             \
-        CFString *: "String",                                           \
-        CFArray *: "Array",                                             \
-        CFMap *: "Map",                                                 \
-        default: "unknown")
 
 
 #endif

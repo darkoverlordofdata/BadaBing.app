@@ -96,9 +96,9 @@ static inline CFDouble __attribute__((overloadable))$(double f)
 
 static inline CFType __attribute__((overloadable))$(CFType o)
 {
-	return o;//CFCreate(CFDoubleClass, f);
+	return o;
+	
 }
-
 #endif
 
 

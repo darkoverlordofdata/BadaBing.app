@@ -40,7 +40,6 @@ main()
 	CFString str, str2;
 	CFMap map;
 
-	// pool = CFNew(CFRefPool);
 	pool = CFRefPoolNew();
 
 	array = CFArrayCreateWith(
@@ -49,19 +48,12 @@ main()
 	    $("!"), 
 		NULL);
 
-	// array = CFCreate(CFArray,
-	//     $("Hallo"),
-	//     $(" Welt"),
-	//     $("!"), 
-	// 	NULL);
-
 	CFForEach(array, ^(int index, CFType obj) {
 		CFLog("\t%i: %@\n", index, obj);
 
 	});
 
-	// str = CFStringNew(NULL);
-	str = CFNew(CFString, NULL);
+	str = CFStringNew(NULL);
 
 	for (var i = 0; i < CFArraySize(array); i++)
 		CFStringAppend(str, CFArrayGet(array, i));
@@ -70,7 +62,6 @@ main()
 
 	CFLog("%s\n", CFStringC(str));
 
-	// pool = CFNew(CFRefPool);
 	pool = CFRefPoolNew();
 	str2 = $("ll");
 	CFLog("%i\n", CFStringFind(str, str2, CFRangeAll));
@@ -78,14 +69,7 @@ main()
 	CFUnRef(pool);
 	CFUnRef(str);
 
-	// pool = CFNew(CFRefPool);
 	pool = CFRefPoolNew();
-
-	// map = CFCreate(CFMap,
-	//     $("Hallo"),	$("Welt!"),
-	//     $("Test"),	$("success!"),
-	//     $("int"), 	$(1234),
-	// 	NULL);
 
 	map = CFMapCreateWith(
 	    $("Hallo"),	$("Welt!"),
@@ -131,7 +115,7 @@ main()
 
 	CFLog("StdIn = %@\n", CFStdIn);
 
-	CFUnRef(pool);
 
+	CFUnRef(pool);
 	return 0;
 }

@@ -129,7 +129,7 @@ CFMapCopy(CFType self)
 	CFMap new;
 	uint32_t i;
 
-	if ((new = CFNew(CFMap, (void*)NULL)) == NULL)
+	if ((new = CFMapNew()) == NULL)
 		return NULL;
 
 	if ((new->data = malloc(sizeof(*new->data) * this->size)) == NULL)
@@ -341,7 +341,7 @@ CFMapGetC(CFMap this, const char *key)
 	CFString str;
 	void *ret;
 
-	if ((str = CFNew(CFMap, key)) == NULL)
+	if ((str = CFStringNew(key)) == NULL)
 		return NULL;
 
 	ret = CFMapGet(this, str);
@@ -463,7 +463,7 @@ CFMapSetC(CFMap this, const char *key, CFType obj)
 	CFString str;
 	bool ret;
 
-	if ((str = CFNew(CFString, key)) == NULL)
+	if ((str = CFStringNew(key)) == NULL)
 		return false;
 
 	ret = CFMapSet(this, str, obj);
