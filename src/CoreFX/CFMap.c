@@ -46,49 +46,24 @@ struct __CFMap {
 	size_t items;
 };
 
-static struct __CFClass class = {
-	.name = "CFMap",
-	.size = sizeof(struct __CFMap),
-	.ctor = CFMapCreate,
-	.dtor = CFMapFinalize,
-	.equal = CFMapEqual,
-	.hash = CFMapHash,
-	.copy = CFMapCopy,
-	.tostr = CFMapToString
-
-};
-CFClass CFMapClass = &class;
-
-CFTypeID
-CFMapGetTypeID (void)
-{
-  return _kCFMapTypeID;
-}
-
-void CFMapClassInitialize()
-{
-	_kCFMapTypeID = CFRegisterClass(&class);
-}
-
-
-Boolean 
-CFMapCreate(CFType self, va_list args)
+static Boolean 
+CFMapConstructor(CFType self, va_list args)
 {
 	CFMap this = self;
-	void *key;
 
 	this->data = NULL;
 	this->size = 0;
 	this->items = 0;
 
-	while ((key = va_arg(args, void*)) != NULL)
-		if (!CFMapSet(this, key, va_arg(args, void*)))
-			return false;
+	// void *key;
+	// while ((key = va_arg(args, void*)) != NULL)
+	// 	if (!CFMapSet(this, key, va_arg(args, void*)))
+	// 		return false;
 
 	return true;
 }
 
-void 
+static void 
 CFMapFinalize(CFType self)
 {
 	CFMap this = self;
@@ -106,7 +81,7 @@ CFMapFinalize(CFType self)
 		free(this->data);
 }
 
-Boolean 
+static Boolean 
 CFMapEqual(CFType ptr1, CFType ptr2)
 {
 	CFObject obj2 = ptr2;
@@ -131,7 +106,7 @@ CFMapEqual(CFType ptr1, CFType ptr2)
 	return true;
 }
 
-CFHashCode 
+static CFHashCode 
 CFMapHash(CFType self)
 {
 	CFMap this = self;
@@ -147,7 +122,7 @@ CFMapHash(CFType self)
 	return hash;
 }
 
-CFType 
+static CFType 
 CFMapCopy(CFType self)
 {
 	CFMap this = self;
@@ -178,6 +153,85 @@ CFMapCopy(CFType self)
 	}
 
 	return new;
+}
+
+char* 
+CFMapToString(CFType self)
+{
+	static char str[64]; 
+
+	CFMap this = self;
+	snprintf(str, 63, "CFMap: %u", this->size);
+	return str;
+}
+
+static struct __CFClass class = {
+	.name = "CFMap",
+	.size = sizeof(struct __CFMap),
+	.ctor = CFMapConstructor,
+	.dtor = CFMapFinalize,
+	.equal = CFMapEqual,
+	.hash = CFMapHash,
+	.copy = CFMapCopy,
+	.tostr = CFMapToString
+
+};
+CFClass CFMapClass = &class;
+
+CFTypeID
+CFMapGetTypeID (void)
+{
+  return _kCFMapTypeID;
+}
+
+void CFMapClassInitialize()
+{
+	_kCFMapTypeID = CFRegisterClass(&class);
+}
+
+CFMap
+CFMapCreate()
+{
+	return CFCreateObject(CFMapClass);
+}
+
+CFMap
+CFMapNew()
+{
+	return CFNewObject(CFMapClass);
+
+}
+
+CFMap
+CFMapCreateWith(CFType first, ...)
+{
+	CFMap this = CFCreateObject(CFMapClass);
+	va_list args;
+	va_start(args, first);
+
+	CFMapSet(this, first, va_arg(args, void*));
+	void *key;
+	while ((key = va_arg(args, void*)) != NULL)
+		if (!CFMapSet(this, key, va_arg(args, void*)))
+
+	va_end(args);
+	return this;
+}
+
+CFMap
+CFMapNewWith(CFType first, ...)
+{
+	CFMap this = CFCreateObject(CFMapClass);
+	va_list args;
+	va_start(args, first);
+
+	CFMapSet(this, first, va_arg(args, void*));
+	void *key;
+	while ((key = va_arg(args, void*)) != NULL)
+		if (!CFMapSet(this, key, va_arg(args, void*)))
+
+	va_end(args);
+	return this;
 }
 
 bool
@@ -445,16 +499,6 @@ CFMapIterNext(CFMapIter_t *iter)
 		iter->key = NULL;
 		iter->obj = NULL;
 	}
-}
-
-char* 
-CFMapToString(CFType self)
-{
-	static char str[64]; 
-
-	CFMap this = self;
-	snprintf(str, 63, "CFMap: %u", this->size);
-	return str;
 }
 
 #ifdef __CoreFX_Advanced_Mode__

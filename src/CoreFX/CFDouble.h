@@ -31,23 +31,14 @@
 typedef struct __CFDouble *CFDouble;
 extern CFClass CFDoubleClass;
 
-extern Boolean 
-CFDoubleCreate(CFType, va_list);
+extern CFDouble
+CFDoubleCreate(double value);
 
-extern Boolean 
-CFDoubleEqual(CFType, CFType);
-
-extern CFHashCode 
-CFDoubleHash(CFType);
-
-extern CFType 
-CFDoubleCopy(CFType);
+extern CFDouble
+CFDoubleNew(double value);
 
 extern double 
 CFDoubleValue(CFDouble);
-
-extern char* 
-CFDoubleToString(CFType self);
 
 extern CFTypeID
 CFDoubleGetTypeID (void);

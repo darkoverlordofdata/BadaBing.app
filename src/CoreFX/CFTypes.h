@@ -84,7 +84,8 @@ typedef size_t CFIndex;
 #define CFNew(T, args...) CFNewObject(T##Class, ## args)
 #define CFCreate(T, args...) CFCreateObject(T##Class, ## args)
 
-
+#define Create(T, args...) CFCreateObject(CFRegisterGet(T##GetTypeID(), ## args))
+#define New(T, args...) CFNewObject(CFRegisterGet(T##GetTypeID(), ## args))
 /**
  *
  * Advanced Mode includes  type inference

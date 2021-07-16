@@ -32,11 +32,11 @@
 typedef struct __CFRefPool *CFRefPool;
 extern CFClass CFRefPoolClass;
 
-extern Boolean 
-CFRefPoolCreate(CFType, va_list);
+extern CFRefPool
+CFRefPoolCreate();
 
-extern void 
-CFRefPoolFinalize(CFType);
+extern CFRefPool
+CFRefPoolNew();
 
 extern Boolean 
 CFRefPoolAdd(CFType);

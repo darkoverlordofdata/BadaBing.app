@@ -40,13 +40,20 @@ main()
 	CFString str, str2;
 	CFMap map;
 
-	pool = CFNew(CFRefPool);
+	// pool = CFNew(CFRefPool);
+	pool = CFRefPoolNew();
 
-	array = CFCreate(CFArray,
+	array = CFArrayCreateWith(
 	    $("Hallo"),
 	    $(" Welt"),
 	    $("!"), 
 		NULL);
+
+	// array = CFCreate(CFArray,
+	//     $("Hallo"),
+	//     $(" Welt"),
+	//     $("!"), 
+	// 	NULL);
 
 	CFForEach(array, ^(int index, CFType obj) {
 		CFLog("\t%i: %@\n", index, obj);
@@ -63,21 +70,29 @@ main()
 
 	CFLog("%s\n", CFStringC(str));
 
-	pool = CFNew(CFRefPool);
+	// pool = CFNew(CFRefPool);
+	pool = CFRefPoolNew();
 	str2 = $("ll");
 	CFLog("%i\n", CFStringFind(str, str2, CFRangeAll));
 
 	CFUnRef(pool);
 	CFUnRef(str);
 
-	pool = CFNew(CFRefPool);
+	// pool = CFNew(CFRefPool);
+	pool = CFRefPoolNew();
 
-	map = CFCreate(CFMap,
+	// map = CFCreate(CFMap,
+	//     $("Hallo"),	$("Welt!"),
+	//     $("Test"),	$("success!"),
+	//     $("int"), 	$(1234),
+	// 	NULL);
+
+	map = CFMapCreateWith(
 	    $("Hallo"),	$("Welt!"),
 	    $("Test"),	$("success!"),
 	    $("int"), 	$(1234),
 		NULL);
-		
+
 	CFLog("{\n");
 	CFForEach(map, Each);
 	CFLog("}\n");
@@ -110,7 +125,7 @@ main()
 
 	CFLog("ii = %@\n", ii);
 	
-	CFLog("hash = %i\n", CFIntHash(ii));
+	CFLog("hash = %i\n", CFHash(ii));
 
 	CFLog("%s\n", CFGetClass(ii)->name);
 

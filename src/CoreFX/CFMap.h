@@ -40,20 +40,17 @@ typedef struct CFMapIter_t {
 
 extern CFClass CFMapClass;
 
-extern Boolean 
-CFMapCreate(CFType, va_list);
+extern CFMap
+CFMapCreate();
 
-extern void 
-CFMapFinalize(CFType);
+extern CFMap
+CFMapNew();
 
-extern Boolean 
-CFMapEqual(CFType, CFType);
+extern CFMap
+CFMapCreateWith(CFType, ...);
 
-extern CFHashCode 
-CFMapHash(CFType);
-
-extern CFType 
-CFMapCopy(CFType);
+extern CFMap
+CFMapNewWith(CFType, ...);
 
 extern CFSize 
 CFMapSize(CFMap);
@@ -75,9 +72,6 @@ CFMapIter(CFMap, CFMapIter_t*);
 
 extern void 
 CFMapIterNext(CFMapIter_t*);
-
-extern char* 
-CFMapToString(CFType self);
 
 extern CFTypeID
 CFMapGetTypeID (void);

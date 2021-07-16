@@ -34,10 +34,28 @@
 
 static CFTypeID _kCFStreamTypeID = 0;
 
+static Boolean 
+CFStreamConstructor(CFType self, va_list args)
+{
+	CFStream this = self;
+
+	this->ops = NULL;
+	this->cache = NULL;
+	this->cache_len = 0;
+
+	return true;
+}
+
+static void 
+CFStreamFinalize(CFType self)
+{
+	CFStreamClose(self);
+}
+
 static struct __CFClass class = {
 	.name = "CFStream",
 	.size = sizeof(struct __CFStream),
-	.ctor = CFStreamCreate,
+	.ctor = CFStreamConstructor,
 	.dtor = CFStreamFinalize
 };
 CFClass CFStreamClass = &class;
@@ -53,25 +71,17 @@ void CFStreamClassInitialize()
 	_kCFStreamTypeID = CFRegisterClass(&class);
 }
 
-
-Boolean 
-CFStreamCreate(CFType self, va_list args)
+CFStream
+CFStreamCreate()
 {
-	CFStream this = self;
-
-	this->ops = NULL;
-	this->cache = NULL;
-	this->cache_len = 0;
-
-	return true;
+	return CFCreateObject(CFStreamClass);
 }
 
-void 
-CFStreamFinalize(CFType self)
+CFStream
+CFStreamNew()
 {
-	CFStreamClose(self);
+	return CFNewObject(CFStreamClass);
 }
-
 
 CFSize
 CFStreamRead(CFType self, CFType buf, CFSize len)

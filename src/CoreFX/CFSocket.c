@@ -51,27 +51,6 @@ struct __CFSocket {
 	bool at_end;
 };
 
-
-static struct __CFClass class = {
-	.name = "CFSocket",
-	.size = sizeof(struct __CFSocket),
-	.ctor = CFSocketCreate,
-	.dtor = CFSocketFinalize
-};
-CFClass CFSocketClass = &class;
-
-CFTypeID
-CFSocketGetTypeID (void)
-{
-  return _kCFSocketTypeID;
-}
-
-
-void CFSocketClassInitialize()
-{
-	_kCFSocketTypeID = CFRegisterClass(&class);
-}
-
 static ssize_t
 sock_read(void *self, void *buf, size_t len)
 {
@@ -120,8 +99,8 @@ static struct CFStreamOps stream_ops = {
 	.close = sock_close
 };
 
-Boolean 
-CFSocketCreate(CFType self, va_list args)
+static Boolean 
+CFSocketConstructor(CFType self, va_list args)
 {
 	CFSocket this = self;
 
@@ -134,10 +113,42 @@ CFSocketCreate(CFType self, va_list args)
 	return true;
 }
 
-void 
+static void 
 CFSocketFinalize(CFType self)
 {
 	CFStreamClass->dtor(self);
+}
+
+static struct __CFClass class = {
+	.name = "CFSocket",
+	.size = sizeof(struct __CFSocket),
+	.ctor = CFSocketConstructor,
+	.dtor = CFSocketFinalize
+};
+CFClass CFSocketClass = &class;
+
+CFTypeID
+CFSocketGetTypeID (void)
+{
+  return _kCFSocketTypeID;
+}
+
+
+void CFSocketClassInitialize()
+{
+	_kCFSocketTypeID = CFRegisterClass(&class);
+}
+
+CFSocket
+CFSocketCreate()
+{
+	return CFCreateObject(CFSocketClass);
+}
+
+CFSocket
+CFSocketNew()
+{
+	return CFNewObject(CFSocketClass);
 }
 
 Boolean

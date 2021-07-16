@@ -31,23 +31,14 @@
 typedef struct __CFBool *CFBool;
 extern CFClass CFBoolClass;
 
-extern Boolean 
-CFBoolCreate(CFType, va_list);
+extern CFBool
+CFBoolCreate(bool value);
 
-extern Boolean 
-CFBoolEqual(CFType, CFType);
-
-extern CFHashCode 
-CFBoolHash(CFType);
-
-extern CFType 
-CFBoolCopy(CFType);
+extern CFBool
+CFBoolNew(bool value);
 
 extern Boolean 
 CFBoolValue(CFBool);
-
-extern char*
-CFBoolToString(CFType);
 
 extern CFTypeID
 CFBoolGetTypeID (void);

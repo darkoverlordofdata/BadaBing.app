@@ -43,28 +43,8 @@ struct __CFRefPool {
 
 static CFRefPool top;
 
-static struct __CFClass class = {
-	.name = "CFRefPool",
-	.size = sizeof(struct __CFRefPool),
-	.ctor = CFRefPoolCreate,
-	.dtor = CFRefPoolFinalize
-};
-CFClass CFRefPoolClass = &class;
-
-CFTypeID
-CFRefPoolGetTypeID (void)
-{
-  return _kCFRefPoolTypeID;
-}
-
-void CFRefPoolClassInitialize()
-{
-	_kCFRefPoolTypeID = CFRegisterClass(&class);
-}
-
-
-Boolean 
-CFRefPoolCreate(CFType self, va_list args)
+static Boolean 
+CFRefPoolConstructor(CFType self, va_list args)
 {
 	CFRefPool this = self;
 
@@ -83,7 +63,7 @@ CFRefPoolCreate(CFType self, va_list args)
 	return true;
 }
 
-void 
+static void 
 CFRefPoolFinalize(CFType self)
 {
 	CFRefPool this = self;
@@ -103,6 +83,39 @@ CFRefPoolFinalize(CFType self)
 	if (top != NULL)
 		top->next = NULL;
 }
+
+static struct __CFClass class = {
+	.name = "CFRefPool",
+	.size = sizeof(struct __CFRefPool),
+	.ctor = CFRefPoolConstructor,
+	.dtor = CFRefPoolFinalize
+};
+CFClass CFRefPoolClass = &class;
+
+CFRefPool
+CFRefPoolCreate()
+{
+	return CFCreateObject(CFRefPoolClass);
+}
+
+CFRefPool
+CFRefPoolNew()
+{
+	return CFNewObject(CFRefPoolClass);
+}
+
+CFTypeID
+CFRefPoolGetTypeID (void)
+{
+  return _kCFRefPoolTypeID;
+}
+
+void CFRefPoolClassInitialize()
+{
+	_kCFRefPoolTypeID = CFRegisterClass(&class);
+}
+
+
 
 Boolean
 CFRefPoolAdd(CFType self)

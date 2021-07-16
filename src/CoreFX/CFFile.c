@@ -55,6 +55,22 @@
 
 #define DEFAULT_MODE S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH
 
+static int parse_mode(const char *mode);
+static ssize_t file_read(CFType self, CFType buf, CFSize len);
+static bool file_write(CFType self, const void* buf, CFSize len);
+static bool file_at_end(CFType self);
+static void file_close(CFType self);
+
+static struct CFStreamOps stream_ops = {
+	.read = file_read,
+	.write = file_write,
+	.at_end = file_at_end,
+	.close = file_close
+};
+
+
+
+
 static CFTypeID _kCFFileTypeID = 0;
 
 struct __CFFile {
@@ -65,14 +81,61 @@ struct __CFFile {
 	bool useCtor;
 };
 
+static Boolean 
+CFFileConstructor(CFType self, va_list args)
+{
+	CFFile this = self;
+	const char *path = va_arg(args, const char*);
+	const char *mode = va_arg(args, const char*);
+	int flags;
+
+	this->path = CFStrdup(path);
+	this->useCtor = true;
+	/* Make sure we have a valid file in case we error out */
+	CFStreamClass->ctor(self, args);
+	this->at_end = false;
+
+	if ((flags = parse_mode(mode)) == -1)
+		return false;
+
+	if ((this->fd = open(path, flags, DEFAULT_MODE)) == -1)
+		return false;
+
+	this->stream.ops = &stream_ops;
+
+	return true;
+}
+
+static void 
+CFFileFinalize(CFType self)
+{
+	CFFile this = self;
+	if (this->useCtor) {
+		free(this->path);
+	}
+	CFStreamClass->dtor(self);
+}
+
+static char* 
+CFFileToString(CFType self)
+{
+	static char str[64]; 
+
+	CFFile this = self;
+	snprintf(str, 63, "CFFile: %s", this->path);
+	return str;
+}
+
 static struct __CFClass class = {
 	.name = "CFFile",
 	.size = sizeof(struct __CFFile),
-	.ctor = CFFileCreate,
+	.ctor = CFFileConstructor,
 	.dtor = CFFileFinalize,
 	.tostr = CFFileToString
 };
 CFClass CFFileClass = &class;
+
+
 
 CFTypeID
 CFFileGetTypeID (void)
@@ -83,6 +146,18 @@ CFFileGetTypeID (void)
 void CFFileClassInitialize()
 {
 	_kCFFileTypeID = CFRegisterClass(&class);
+}
+
+CFFile 
+CFFileCreate(char* path, char* mode)
+{
+	return CFCreateObject(CFFileClass, path, mode);
+}
+
+CFFile 
+CFFileNew(char* path, char* mode)
+{
+	return CFNewObject(CFFileClass, path, mode);
 }
 
 static int
@@ -156,47 +231,6 @@ file_close(CFType self)
 	close(this->fd);
 }
 
-static struct CFStreamOps stream_ops = {
-	.read = file_read,
-	.write = file_write,
-	.at_end = file_at_end,
-	.close = file_close
-};
-
-Boolean 
-CFFileCreate(CFType self, va_list args)
-{
-	CFFile this = self;
-	const char *path = va_arg(args, const char*);
-	const char *mode = va_arg(args, const char*);
-	int flags;
-
-	this->path = CFStrdup(path);
-	this->useCtor = true;
-	/* Make sure we have a valid file in case we error out */
-	CFStreamClass->ctor(self, args);
-	this->at_end = false;
-
-	if ((flags = parse_mode(mode)) == -1)
-		return false;
-
-	if ((this->fd = open(path, flags, DEFAULT_MODE)) == -1)
-		return false;
-
-	this->stream.ops = &stream_ops;
-
-	return true;
-}
-
-void 
-CFFileFinalize(CFType self)
-{
-	CFFile this = self;
-	if (this->useCtor) {
-		free(this->path);
-	}
-	CFStreamClass->dtor(self);
-}
 
 
 static struct __CFFile CFStdIn_ = {
@@ -242,12 +276,3 @@ CFFile CFStdIn = &CFStdIn_;
 CFFile CFStdOut = &CFStdOut_;
 CFFile CFStdErr = &CFStdErr_;
 
-char* 
-CFFileToString(CFType self)
-{
-	static char str[64]; 
-
-	CFFile this = self;
-	snprintf(str, 63, "CFFile: %s", this->path);
-	return str;
-}

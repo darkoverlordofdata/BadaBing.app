@@ -35,10 +35,60 @@ struct __CFBool {
 	bool value;
 };
 
+static Boolean 
+CFBoolConstructor(CFType self, va_list args)
+{
+	CFBool this = self;
+	this->value = va_arg(args, int);
+	return true;
+}
+
+static Boolean 
+CFBoolEqual(CFType ptr1, CFType ptr2)
+{
+	CFObject obj2 = ptr2;
+	CFBool boolean1, boolean2;
+
+	if (obj2->cls != CFBoolClass)
+		return false;
+
+	boolean1 = ptr1;
+	boolean2 = ptr2;
+
+	return (boolean1->value == boolean2->value);
+}
+
+static char*
+CFBoolToString(CFType self)
+{
+	CFBool this = self;
+	
+	if (this->value) {
+		return "YES";
+	}
+	else {
+		return "NO";
+	}
+}
+
+static CFHashCode 
+CFBoolHash(CFType self)
+{
+	CFBool this = self;
+
+	return (uint32_t)this->value;
+}
+
+static CFType 
+CFBoolCopy(CFType self)
+{
+	return CFRef(self);
+}
+
 static struct __CFClass class = {
 	.name = "CFBool",
 	.size = sizeof(struct __CFBool),
-	.ctor = CFBoolCreate,
+	.ctor = CFBoolConstructor,
 	.equal = CFBoolEqual,
 	.hash = CFBoolHash,
 	.copy = CFBoolCopy,
@@ -57,56 +107,16 @@ void CFBoolClassInitialize()
 	_kCFBoolTypeID = CFRegisterClass(&class);
 }
 
-Boolean 
-CFBoolCreate(CFType self, va_list args)
+CFBool
+CFBoolCreate(bool value)
 {
-	CFBool this = self;
-
-	this->value = va_arg(args, int);
-
-	return true;
+	return CFCreateObject(CFBoolClass, value);
 }
 
-Boolean 
-CFBoolEqual(CFType ptr1, CFType ptr2)
+CFBool
+CFBoolNew(bool value)
 {
-	CFObject obj2 = ptr2;
-	CFBool boolean1, boolean2;
-
-	if (obj2->cls != CFBoolClass)
-		return false;
-
-	boolean1 = ptr1;
-	boolean2 = ptr2;
-
-	return (boolean1->value == boolean2->value);
-}
-
-char*
-CFBoolToString(CFType self)
-{
-	CFBool this = self;
-	
-	if (this->value) {
-		return "YES";
-	}
-	else {
-		return "NO";
-	}
-}
-
-CFHashCode 
-CFBoolHash(CFType self)
-{
-	CFBool this = self;
-
-	return (uint32_t)this->value;
-}
-
-CFType 
-CFBoolCopy(CFType self)
-{
-	return CFRef(self);
+	return CFNewObject(CFBoolClass, value);
 }
 
 Boolean

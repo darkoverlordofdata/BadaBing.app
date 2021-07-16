@@ -39,28 +39,8 @@ struct __CFBox {
 	bool free;
 };
 
-static struct __CFClass class = {
-	.name = "CFBox",
-	.size = sizeof(struct __CFBox),
-	.ctor = CFBoxCreate,
-	.dtor = CFBoxFinalize
-};
-CFClass CFBoxClass = &class;
-
-CFTypeID
-CFBoxGetTypeID (void)
-{
-  return _kCFBoxTypeID;
-}
-
-void CFBoxClassInitialize()
-{
-	_kCFBoxTypeID = CFRegisterClass(&class);
-}
-
-
 Boolean 
-CFBoxCreate(CFType self, va_list args)
+CFBoxConstructor(CFType self, va_list args)
 {
 	CFBox this = self;
 
@@ -78,6 +58,37 @@ CFBoxFinalize(CFType self)
 
 	if (this->free)
 		free(this->self);
+}
+
+static struct __CFClass class = {
+	.name = "CFBox",
+	.size = sizeof(struct __CFBox),
+	.ctor = CFBoxConstructor,
+	.dtor = CFBoxFinalize
+};
+CFClass CFBoxClass = &class;
+
+CFTypeID
+CFBoxGetTypeID (void)
+{
+  return _kCFBoxTypeID;
+}
+
+void CFBoxClassInitialize()
+{
+	_kCFBoxTypeID = CFRegisterClass(&class);
+}
+
+CFBox
+CFBoxCreate(CFType obj, UInt32 type, Int32 free)
+{
+	return CFCreateObject(CFBoxClass, obj, type, free);
+}
+
+CFBox
+CFBoxNew(CFType obj, UInt32 type, Int32 free)
+{
+	return CFNewObject(CFBoxClass, obj, type, free);
 }
 
 void*

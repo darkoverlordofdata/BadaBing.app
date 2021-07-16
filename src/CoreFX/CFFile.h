@@ -33,14 +33,11 @@ typedef struct __CFFile *CFFile;
 
 extern CFClass CFFileClass;
 
-extern Boolean 
-CFFileCreate(CFType, va_list);
+extern CFFile 
+CFFileCreate(char* path, char* mode);
 
-extern void 
-CFFileFinalize(CFType);
-
-extern char* 
-CFFileToString(CFType self);
+extern CFFile 
+CFFileNew(char* path, char* mode);
 
 extern CFTypeID
 CFFileGetTypeID (void);

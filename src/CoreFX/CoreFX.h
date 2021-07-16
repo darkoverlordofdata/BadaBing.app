@@ -75,23 +75,23 @@ static inline CFString __attribute__((overloadable))$(char* str)
 
 static inline CFBool __attribute__((overloadable))$(_Bool b)
 {
-	return CFCreate(CFBool, b);
+	return CFBoolCreate(b);
 }
 
 
 static inline CFInt __attribute__((overloadable))$(int i)
 {
-	return CFCreate(CFInt, i);
+	return CFIntCreate(i);
 }
 
 static inline CFInt __attribute__((overloadable))$(long i)
 {
-	return CFCreate(CFInt, i);
+	return CFIntCreate(i);
 }
 
 static inline CFDouble __attribute__((overloadable))$(double f)
 {
-	return CFCreate(CFDouble, f);
+	return CFDoubleCreate(f);
 }
 
 static inline CFType __attribute__((overloadable))$(CFType o)

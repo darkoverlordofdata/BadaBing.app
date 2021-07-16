@@ -32,20 +32,17 @@ typedef struct __CFArray *CFArray;
 
 extern CFClass CFArrayClass;
 
-extern Boolean 
-CFArrayCreate(CFType self, va_list args);
+extern CFArray 
+CFArrayCreate();
 
-extern void 
-CFArrayFinalize(CFType);
+extern CFArray 
+CFArrayNew();
 
-extern Boolean 
-CFArrayEqual(CFType, CFType);
+extern CFArray 
+CFArrayCreateWith(CFType first, ...);
 
-extern CFHashCode 
-CFArrayHash(CFType);
-
-extern CFType 
-CFArrayCopy(CFType);
+extern CFArray 
+CFArrayNewWith(CFType first, ...);
 
 extern CFSize 
 CFArraySize(CFArray);

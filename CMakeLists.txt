@@ -16,8 +16,8 @@ set ( RELEASE_NAME catlock )
 include ( CMakeToolsHelpers OPTIONAL )
 
 set(SOURCES
-    src/main.c
-    # src/tests.c
+    # src/main.c
+    src/tests.c
 )
 add_subdirectory( src/CoreFX )
 add_subdirectory( src/UIPack )

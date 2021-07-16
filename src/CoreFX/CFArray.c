@@ -41,50 +41,20 @@ struct __CFArray {
 	size_t size;
 };
 
-static struct __CFClass class = {
-	.name = "CFArray",
-	.size = sizeof(struct __CFArray),
-	.ctor = CFArrayCreate,
-	.dtor = CFArrayFinalize,
-	.equal = CFArrayEqual,
-	.hash = CFArrayHash,
-	.copy = CFArrayCopy,
-	.class = CFGetClass,
-	.tostr = CFArrayToString
 
-};
-CFClass CFArrayClass = &class;
 
-CFTypeID
-CFArrayGetTypeID (void)
-{
-  return _kCFArrayTypeID;
-}
-
-void CFArrayClassInitialize()
-{
-	_kCFArrayTypeID = CFRegisterClass(&class);
-}
-
-typedef CFArray (*CFAlloc_t)(CFType cf, ...);
-
-Boolean 
-CFArrayCreate(CFType self, va_list args)
+static Boolean 
+CFArrayConstructor(CFType self, va_list args)
 {
 	CFArray this = self;
-	void *obj;
 
 	this->data = NULL;
 	this->size = 0;
 
-	while ((obj = va_arg(args, void*)) != NULL)
-		if (!CFArrayPush(this, obj))
-			return false;
-
 	return true;
 }
 
-void 
+static void 
 CFArrayFinalize(CFType self)
 {
 	CFArray this = self;
@@ -97,7 +67,7 @@ CFArrayFinalize(CFType self)
 		free(this->data);
 }
 
-Boolean 
+static Boolean 
 CFArrayEqual(CFType ptr1, CFType ptr2)
 {
 	CFObject obj2 = ptr2;
@@ -120,7 +90,7 @@ CFArrayEqual(CFType ptr1, CFType ptr2)
 	return true;
 }
 
-CFHashCode 
+static CFHashCode 
 CFArrayHash(CFType self)
 {
 	CFArray this = self;
@@ -137,7 +107,7 @@ CFArrayHash(CFType self)
 	return hash;
 }
 
-CFType 
+static CFType 
 CFArrayCopy(CFType self)
 {
 	CFArray this = self;
@@ -157,6 +127,81 @@ CFArrayCopy(CFType self)
 		new->data[i] = CFRef(this->data[i]);
 
 	return new;
+}
+
+static struct __CFClass class = {
+	.name = "CFArray",
+	.size = sizeof(struct __CFArray),
+	.ctor = CFArrayConstructor,
+	.dtor = CFArrayFinalize,
+	.equal = CFArrayEqual,
+	.hash = CFArrayHash,
+	.copy = CFArrayCopy,
+	.class = CFGetClass,
+	.tostr = CFArrayToString
+
+};
+CFClass CFArrayClass = &class;
+
+CFTypeID
+CFArrayGetTypeID (void)
+{
+  return _kCFArrayTypeID;
+}
+
+void CFArrayClassInitialize()
+{
+	_kCFArrayTypeID = CFRegisterClass(&class);
+}
+
+CFArray 
+CFArrayCreate()
+{
+	// return CFCreateObject(CFArrayClass);
+	return CFCreateObject(CFRegisterGet(CFArrayGetTypeID()));
+}
+
+CFArray 
+CFArrayNew()
+{
+	// return CFNewObject(CFArrayClass);
+	return CFNewObject(CFRegisterGet(CFArrayGetTypeID()));
+}
+
+CFArray 
+CFArrayCreateWith(CFType first, ...)
+{
+	// CFArray this = CFCreateObject(CFRegisterGet(CFArrayGetTypeID()));
+	CFArray this = Create(CFArray);
+	
+	va_list args;
+	va_start(args, first);
+
+	CFArrayPush(this, first);
+	void *obj;
+	while ((obj = va_arg(args, void*)) != NULL)
+		CFArrayPush(this, obj);
+
+	va_end(args);
+	return this;
+}
+
+CFArray 
+CFArrayNewWith(CFType first, ...)
+{
+	// CFArray this = CFNewObject(CFArrayClass);
+	CFArray this = CFNewObject(CFRegisterGet(CFArrayGetTypeID()));
+
+	va_list args;
+	va_start(args, first);
+
+	CFArrayPush(this, first);
+	void *obj;
+	while ((obj = va_arg(args, void*)) != NULL)
+		CFArrayPush(this, obj);
+
+	va_end(args);
+	return this;
 }
 
 CFType

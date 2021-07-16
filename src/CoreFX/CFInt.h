@@ -32,23 +32,14 @@
 typedef struct __CFInt *CFInt;
 extern CFClass CFIntClass;
 
-extern Boolean 
-CFIntCreate(CFType, va_list);
+extern CFInt 
+CFIntCreate(int value);
 
-extern Boolean 
-CFIntEqual(CFType, CFType);
-
-extern CFHashCode 
-CFIntHash(CFType);
-
-extern CFType 
-CFIntCopy(CFType);
+extern CFInt 
+CFIntNew(int value);
 
 extern intmax_t 
 CFIntValue(CFInt);
-
-extern char* 
-CFIntToString(CFType self);
 
 extern CFTypeID
 CFIntGetTypeID (void);

@@ -31,11 +31,11 @@ typedef struct __CFSocket* CFSocket;
 
 extern CFClass CFStringClass;
 
-extern Boolean 
-CFSocketCreate(CFType, va_list);
+extern CFSocket
+CFSocketCreate();
 
-extern void 
-CFSocketFinalize(CFType);
+extern CFSocket
+CFSocketNew();
 
 extern Boolean 
 CFSocketConnect(CFSocket, const char*, uint16_t);

@@ -51,11 +51,11 @@ typedef struct __CFStream *CFStream;
 
 extern CFClass CFStreamClass;
 
-extern Boolean 
-CFStreamCreate(CFType, va_list);
+extern CFStream
+CFStreamCreate();
 
-extern void 
-CFStreamFinalize(CFType);
+extern CFStream
+CFStreamNew();
 
 extern CFSize 
 CFStreamRead(CFType , CFType , CFSize);

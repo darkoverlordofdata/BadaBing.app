@@ -32,11 +32,11 @@
 typedef struct __CFBox *CFBox;
 extern CFClass CFBoxClass;
 
-extern Boolean 
-CFBoxCreate(CFType, va_list);
+extern CFBox
+CFBoxCreate(CFType obj, UInt32 type, Int32 free);
 
-extern void 
-CFBoxFinalize(CFType);
+extern CFBox
+CFBoxNew(CFType obj, UInt32 type, Int32 free);
 
 extern CFType 
 CFBoxPtr(CFBox);

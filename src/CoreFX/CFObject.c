@@ -87,8 +87,8 @@ CFObjectGetTypeID (void)
 CFTypeID
 CFRegisterClass(CFClass cls)
 {
-	ClassRegistry[classRegistrySize] = cls;
 	classRegistrySize += 1;
+	ClassRegistry[classRegistrySize] = cls;
 	return classRegistrySize;
 }
 

@@ -35,10 +35,59 @@ struct __CFInt {
 	intmax_t value;
 };
 
+static Boolean 
+CFIntConstructor(CFType self, va_list args)
+{
+	CFInt this = self;
+
+	this->value = va_arg(args, intmax_t);
+
+	return true;
+}
+
+static Boolean 
+CFIntEqual(CFType ptr1, CFType ptr2)
+{
+	CFObject obj2 = ptr2;
+	CFInt int1, int2;
+
+	if (obj2->cls != CFIntClass)
+		return false;
+
+	int1 = ptr1;
+	int2 = ptr2;
+
+	return (int1->value == int2->value);
+}
+
+static CFHashCode 
+CFIntHash(CFType self)
+{
+	CFInt this = self;
+	return (uint32_t)this->value;
+}
+
+static CFType 
+CFIntCopy(CFType self)
+{
+	return CFRef(self);
+}
+
+static char* 
+CFIntToString(CFType self)
+{
+	static char str[64]; 
+
+	CFInt this = self;
+
+	snprintf(str, 63, "%li", this->value);
+	return str;
+}
+
 static struct __CFClass class = {
 	.name = "CFInt",
 	.size = sizeof(struct __CFInt),
-	.ctor = CFIntCreate,
+	.ctor = CFIntConstructor,
 	.equal = CFIntEqual,
 	.hash = CFIntHash,
 	.copy = CFIntCopy,
@@ -57,58 +106,22 @@ void CFIntClassInitialize()
 	_kCFIntTypeID = CFRegisterClass(&class);
 }
 
-Boolean 
-CFIntCreate(CFType self, va_list args)
+CFInt 
+CFIntCreate(int value)
 {
-	CFInt this = self;
-
-	this->value = va_arg(args, intmax_t);
-
-	return true;
+	return CFCreateObject(CFIntClass, value);
 }
 
-Boolean 
-CFIntEqual(CFType ptr1, CFType ptr2)
+CFInt 
+CFIntNew(int value)
 {
-	CFObject obj2 = ptr2;
-	CFInt int1, int2;
-
-	if (obj2->cls != CFIntClass)
-		return false;
-
-	int1 = ptr1;
-	int2 = ptr2;
-
-	return (int1->value == int2->value);
+	return CFNewObject(CFIntClass, value);
 }
 
-CFHashCode 
-CFIntHash(CFType self)
-{
-	CFInt this = self;
-	return (uint32_t)this->value;
-}
-
-CFType 
-CFIntCopy(CFType self)
-{
-	return CFRef(self);
-}
 
 intmax_t 
 CFIntValue(CFInt this)
 {
 	return this->value;
-}
-
-char* 
-CFIntToString(CFType self)
-{
-	static char str[64]; 
-
-	CFInt this = self;
-
-	snprintf(str, 63, "%li", this->value);
-	return str;
 }
 
