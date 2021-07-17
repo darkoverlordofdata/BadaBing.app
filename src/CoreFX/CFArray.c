@@ -32,16 +32,14 @@
 #include "CFArray.h"
 #include "CFHash.h"
 
-
-static CFTypeID _kCFArrayTypeID = 0;
-
 struct __CFArray {
 	struct __CFObject obj;
 	void **data;
 	size_t size;
 };
 
-
+static CFTypeID _kCFArrayTypeID = 0;
+static CFClass CFArrayClass;
 
 static Boolean 
 CFArrayConstructor(CFType self, va_list args)
@@ -73,6 +71,7 @@ CFArrayEqual(CFType ptr1, CFType ptr2)
 	CFObject obj2 = ptr2;
 	CFArray array1, array2;
 	size_t i;
+
 
 	if (obj2->cls != CFArrayClass)
 		return false;
@@ -129,19 +128,20 @@ CFArrayCopy(CFType self)
 	return new;
 }
 
-static struct __CFClass class = {
-	.name = "CFArray",
-	.size = sizeof(struct __CFArray),
-	.ctor = CFArrayConstructor,
-	.dtor = CFArrayFinalize,
-	.equal = CFArrayEqual,
-	.hash = CFArrayHash,
-	.copy = CFArrayCopy,
-	.class = CFGetClass,
-	.tostr = CFArrayToString
 
-};
-CFClass CFArrayClass = &class;
+// static struct __CFClass __CFArrayClass = {
+// 	.name = "CFArray",
+// 	.size = sizeof(struct __CFArray),
+// 	.ctor = CFArrayConstructor,
+// 	.dtor = CFArrayFinalize,
+// 	.equal = CFArrayEqual,
+// 	.hash = CFArrayHash,
+// 	.copy = CFArrayCopy,
+// 	.class = CFGetClass,
+// 	.tostr = CFArrayToString
+
+// };
+// CFClass CFArrayClass = &__CFArrayClass;
 
 CFTypeID
 CFArrayGetTypeID (void)
@@ -151,27 +151,37 @@ CFArrayGetTypeID (void)
 
 void CFArrayClassInitialize()
 {
-	_kCFArrayTypeID = CFRegisterClass(&class);
+	static struct __CFClass __CFArrayClass = {
+		.name 	= "CFArray",
+		.size 	= sizeof(struct __CFArray),
+		.ctor 	= CFArrayConstructor,
+		.dtor 	= CFArrayFinalize,
+		.equal 	= CFArrayEqual,
+		.hash 	= CFArrayHash,
+		.copy 	= CFArrayCopy,
+		.class 	= CFGetClass,
+		.tostr 	= CFArrayToString
+
+	};
+	CFArrayClass = &__CFArrayClass;
+	_kCFArrayTypeID = CFRegisterClass(CFArrayClass);
 }
 
 CFArray 
 CFArrayCreate()
 {
 	return CFCreateObject(CFArrayClass);
-	// return CFCreateObject(CFRegisterGet(CFArrayGetTypeID()));
 }
 
 CFArray 
 CFArrayNew()
 {
 	return CFNewObject(CFArrayClass);
-	// return CFNewObject(CFRegisterGet(CFArrayGetTypeID()));
 }
 
 CFArray 
 CFArrayCreateWith(CFType first, ...)
 {
-	// CFArray this = CFCreateObject(CFRegisterGet(CFArrayGetTypeID()));
 	CFArray this = CFCreateObject(CFArrayClass);
 	
 	va_list args;
@@ -189,8 +199,7 @@ CFArrayCreateWith(CFType first, ...)
 CFArray 
 CFArrayNewWith(CFType first, ...)
 {
-	// CFArray this = CFNewObject(CFArrayClass);
-	CFArray this = CFNewObject(CFRegisterGet(CFArrayGetTypeID()));
+	CFArray this = CFNewObject(CFArrayClass);
 
 	va_list args;
 	va_start(args, first);

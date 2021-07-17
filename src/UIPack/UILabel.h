@@ -26,25 +26,18 @@
 ******************************************************************/
 #pragma once
 #include <CoreFX/CoreFX.h>
-#include "main.h"
 #include "UIFont.h"
 #include "UITypes.h"
 
-typedef struct __UILabel *UILabelRef;
-extern CFClass UILabelClass;
+typedef struct __UILabel *UILabel;
 
-Boolean
-UILabelConstructor(CFType, va_list);
 
 void 
-UILabelFinalize(CFType);
+UILabelSetText(UILabel, char*);
 
 void 
-UILabelSetText(UILabelRef, char*);
+UILabelSetPos(UILabel, int , int );
 
 void 
-UILabelSetPos(UILabelRef, int , int );
-
-void 
-UILabelDraw(UILabelRef);
+UILabelDraw(UILabel);
 

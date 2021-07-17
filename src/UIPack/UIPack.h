@@ -44,6 +44,5 @@
 #include "UIApplication.h"
 #include "UIFont.h"
 #include "UILabel.h"
-#include "UIParams.h"
 #include "UITypes.h"
 #include "UIWindow.h"

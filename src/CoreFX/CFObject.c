@@ -45,7 +45,7 @@ void CFRefPoolClassInitialize();
 void CFSocketClassInitialize();
 void CFStreamClassInitialize();
 void CFStringClassInitialize();
-void CFInitialize (void) __attribute__ ((constructor));
+void CFInitialize (void) __attribute__ ((constructor(101) ));
 
 void
 CFInitialize()

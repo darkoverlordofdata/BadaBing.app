@@ -24,7 +24,10 @@
 * POSSIBILITY OF SUCH DAMAGE.
 *
 ******************************************************************/
+#include <unistd.h>
+#include <getopt.h>
 #include "UIApplication.h"
+
 
 /**
  *	UIApplication
@@ -32,48 +35,126 @@
 struct __UIApplication
 {
 	struct __CFObject obj;
-    UIWindowRef window;
-    UIParamsRef params;
+    UIWindow window;
+    CFMap params;
     CFString cwd;
 };
 
-static struct __CFClass class = {
-	.name = "UIApplication",
-	.size = sizeof(struct __UIApplication),
-	.ctor = UIApplicationConstructor,
-	.dtor = UIApplicationFinalize
-};
-CFClass UIApplicationClass = &class;
+static CFTypeID _kUIApplicationTypeID = 0;
+static CFClass UIApplicationClass;
 
-Boolean
+void UIApplicationClassInitialize();
+void UIFontClassInitialize();
+void UILabelClassInitialize();
+void UIWindowClassInitialize();
+
+void UIInitialize (void) __attribute__ ((constructor(102) ));
+
+void
+UIInitialize()
+{
+	UIApplicationClassInitialize();
+	UIFontClassInitialize();
+	UILabelClassInitialize();
+	UIWindowClassInitialize();
+}
+//CFRegisterGet(UIWindowGetTypeID())
+
+static Boolean
 UIApplicationConstructor(CFType self, va_list args)
 {
-    UIApplicationRef this = self;
+    UIApplication this = self;
 	int argc = va_arg(args, int);
     char **argv = va_arg(args, char **);
+	struct option *longopts = va_arg(args, struct option *);
 
-	this->params = CFCreateObject(UIParamsClass, argc, argv);
-	this->window = CFCreateObject(UIWindowClass, this);
+	char sVal[2];
+	sVal[1] = '\0';
+
+	this->window = CFCreateObject(CFRegisterGet(UIWindowGetTypeID()), this);
 
 	char cwd[1024];
 	getcwd(cwd, sizeof(cwd));
-	this->cwd =CFCreateObject(CFStringClass, cwd);
+	this->cwd = CFCreateObject(CFStringClass, cwd);
+
+	CFString flags = CFStringCreate("");
+	for (int i=0; longopts[i].name != NULL; i++) {
+		sVal[0] = longopts[i].val;
+		CFStringAppendC(flags, sVal);
+		if (longopts[i].has_arg == required_argument) {
+			CFStringAppendC(flags, ":");
+		}
+	}
+
+	this->params = CFMapCreate();
+	int longindex = -1;
+	int opt = 0;
+
+	while ((opt = getopt_long(argc, argv, CFStringC(flags), longopts, &longindex))!= -1) {
+
+		CFString str = CFStringCreate("");
+		sVal[0] = opt;
+		CFStringAppendC(str, sVal);
+		if (optarg != NULL) {
+			CFMapSet(this->params, str, $(optarg));
+		}
+		for (int i=0; longopts[i].name != NULL; i++) {
+			if (longopts[i].val == opt) {
+				CFString name = CFStringCreate(longopts[i].name);
+				if (longopts[i].has_arg == required_argument) {
+					CFMapSet(this->params, name, $(optarg));
+				} else {
+					CFMapSet(this->params, str, $("YES"));
+					CFMapSet(this->params, name, $("YES"));
+				}
+			}
+		}
+	}
 
 	return true;
 }
 
-void 
+static void 
 UIApplicationFinalize(CFType self)
 {
     CFLog("UIApplication::dtor\n");
 }
 
+CFTypeID
+UIApplicationGetTypeID (void)
+{
+  return _kUIApplicationTypeID;
+}
 
+void UIApplicationClassInitialize()
+{
+	static struct __CFClass __UIApplicationClass = {
+		.name = "UIApplication",
+		.size = sizeof(struct __UIApplication),
+		.ctor = UIApplicationConstructor,
+		.dtor = UIApplicationFinalize
+	};
+	UIApplicationClass = &__UIApplicationClass;
+	_kUIApplicationTypeID = CFRegisterClass(UIApplicationClass);
+}
+
+UIApplication 
+UIApplicationCreate(int argc, char** argv, struct option* longopts)
+{
+	return CFCreateObject(UIApplicationClass, argc, argv, longopts);
+}
+
+UIApplication 
+UIApplicationNew(int argc, char** argv, struct option* longopts)
+{
+	return CFNewObject(UIApplicationClass, argc, argv, longopts);
+}
 /**
  *	UIApplication GetCwd
  */
 CFString 
-UIApplicationGetCwd(UIApplicationRef this) {
+UIApplicationGetCwd(UIApplication this) 
+{
 	return this->cwd;
 }
 
@@ -82,15 +163,17 @@ UIApplicationGetCwd(UIApplicationRef this) {
  */
 // UIWindowRef 
 CFType
-UIApplicationGetWindow(UIApplicationRef this) {
+UIApplicationGetWindow(UIApplication this) 
+{
 	return this->window;
 }
 
 /**
  *	UIApplication GetParams
  */
-UIParamsRef
-UIApplicationGetParams(UIApplicationRef this) {
+CFMap
+UIApplicationGetParams(UIApplication this) 
+{
 	return this->params;
 }
 

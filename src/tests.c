@@ -27,7 +27,8 @@
 #include <stdio.h>
 #include <CoreFX/CoreFX.h>
 
-void Each(CFType key, CFType obj) 
+void 
+Each(CFType key, CFType obj) 
 {
 	CFLog("\t%@ = %@\n", key, obj);
 }
@@ -35,14 +36,9 @@ void Each(CFType key, CFType obj)
 int
 main()
 {
-	CFRefPool pool;
-	CFArray array;
-	CFString str, str2;
-	CFMap map;
+	var pool = CFRefPoolNew();
 
-	pool = CFRefPoolNew();
-
-	array = CFArrayCreateWith(
+	var array = CFArrayCreateWith(
 	    $("Hallo"),
 	    $(" Welt"),
 	    $("!"), 
@@ -50,10 +46,9 @@ main()
 
 	CFForEach(array, ^(int index, CFType obj) {
 		CFLog("\t%i: %@\n", index, obj);
-
 	});
 
-	str = CFStringNew(NULL);
+	var str = CFStringNew(NULL);
 
 	for (var i = 0; i < CFArraySize(array); i++)
 		CFStringAppend(str, CFArrayGet(array, i));
@@ -63,7 +58,7 @@ main()
 	CFLog("%s\n", CFStringC(str));
 
 	pool = CFRefPoolNew();
-	str2 = $("ll");
+	var str2 = $("ll");
 	CFLog("%i\n", CFStringFind(str, str2, CFRangeAll));
 
 	CFUnRef(pool);
@@ -71,7 +66,7 @@ main()
 
 	pool = CFRefPoolNew();
 
-	map = CFMapCreateWith(
+	var map = CFMapCreateWith(
 	    $("Hallo"),	$("Welt!"),
 	    $("Test"),	$("success!"),
 	    $("int"), 	$(1234),

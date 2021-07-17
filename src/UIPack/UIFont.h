@@ -26,15 +26,13 @@
 ******************************************************************/
 #pragma once
 #include <CoreFX/CoreFX.h>
-#include "main.h"
 #include "UITypes.h"
 
-typedef struct __UIFont *UIFontRef;
+typedef struct __UIFont *UIFont;
 
-extern CFClass UIFontClass;
+extern UIFont 
+UIFontCreate(char* name, int size);
 
-Boolean
-UIFontConstructor(CFType, va_list);
+extern UIFont 
+UIFontNew(char* name, int size);
 
-void 
-UIFontFinalize(CFType);

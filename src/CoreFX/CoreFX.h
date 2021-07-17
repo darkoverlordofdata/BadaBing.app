@@ -62,11 +62,7 @@
 
 
 #ifdef __CoreFX_Advanced_Mode__
-/**
- *
- * Advanced Mode includes type inference
- *
- */
+
 
 static inline CFString __attribute__((overloadable))$(char* str)
 {
@@ -99,6 +95,7 @@ static inline CFType __attribute__((overloadable))$(CFType o)
 	return o;
 	
 }
+
 #endif
 
 

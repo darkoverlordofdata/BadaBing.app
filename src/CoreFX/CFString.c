@@ -156,6 +156,9 @@ CFStringFinalize(CFType self)
 Boolean 
 CFStringEqual(CFType ptr1, CFType ptr2)
 {
+	if (!ptr1) return false;
+	if (!ptr2) return false;
+
 	CFObject obj2 = ptr2;
 	CFString str1, str2;
 

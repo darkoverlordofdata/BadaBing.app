@@ -28,20 +28,57 @@
 #include <UIPack/UIPack.h>
 #include "main.h"
 
-int main(int argc, char **argv) {
+static struct option longopts[] = {
+    {"help", no_argument, NULL, 'h'},
+    {"version", no_argument, NULL, 'V'},
+    {"scrot", no_argument, NULL, 's'},
+    {"calendar", required_argument, NULL, 'c'},
+    {"pin", required_argument, NULL, 'p'},
+    {"verbosity", required_argument, NULL, 'v'},
+    {"font", required_argument, NULL, 'f'},
+    {"theme", required_argument, NULL, 't'},
+    {"tz", required_argument, NULL, 'z'}
+};
 
-	CFRefPool pool = CFNewObject(CFRefPoolClass);
 
-    UIApplicationRef app = CFCreateObject(UIApplicationClass, argc, argv);
+int main(int argc, char **argv)
+{
 
-    // CFLog("CWD: %s\n", CFStringC(UIApplicationGetCwd(app)));
+	CFRefPool pool = CFRefPoolNew(); 
+    UIApplication app = UIApplicationCreate(argc, argv, longopts);
+    var parm = UIApplicationGetParams(app);
+
+    if (CFStringEqual($("YES"), CFMapGet(parm, $("version")))) {
+        printf("catlock v0.1.0, © 2020 Dark Overlord of Data\n");
+        printf("inspired by metalock © 2012 Timothy Beyer\n");
+    	CFUnRef(pool);
+        return 0;
+    }
+
+    if (CFStringEqual($("YES"), CFMapGetC(parm, "help"))) {
+        printf("Usage: catlock [option]\n");
+        printf("\n");
+        printf("-h / --help               help (self)\n");
+        printf("-V / --version            version information\n");
+        printf("-s / --scrot              take screen pics\n");
+        printf("-c / --calendar           calendar app, such as \"orage\"\n");
+        printf("-v n / --verbosity n      verbosity level (default: 0)\n");
+        printf("-f name / --font name     X11 font name\n");
+        printf("-t name / --theme name    theme name (default: badabing)\n");
+        printf("\n");
+        printf("https://github.com/darkoverlordofdata/kitty-cat-lock\n" );
+    	CFUnRef(pool);
+        return 0;
+    }
+
     CFLog("CWD: %@\n", UIApplicationGetCwd(app));
 
-    UIParamsPrint(UIApplicationGetParams(app));
-    UIWindowShow(UIApplicationGetWindow(app));
-    UIWindowRun(UIApplicationGetWindow(app));
+    UIWindow win = UIWindowCreate(app, "BadaBing", (UIRect){ 100, 100, 400, 300});
 
+    UIWindowShow(win);
+    UIWindowRun(win);
 	CFUnRef(pool);
+    return 0;
     
 }
 

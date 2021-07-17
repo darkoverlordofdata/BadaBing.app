@@ -35,38 +35,22 @@ struct __UILabel
     int x;
     int y;
     char* text;
-    UIFontRef font;
+    UIFont font;
 };
 
-static struct __CFClass class = {
-	.name = "UILabel",
-	.size = sizeof(struct __UILabel),
-	.ctor = UILabelConstructor,
-	.dtor = UILabelFinalize
-};
-CFClass UILabelClass = &class;
+static CFTypeID _kUILabelTypeID = 0;
+static CFClass UILabelClass;
 
 
-void 
-UILabelSetText(UILabelRef this, char* text) {
-}
 
-void 
-UILabelSetPos(UILabelRef this, int x, int y) {
-}
-
-void 
-UILabelDraw(UILabelRef this) {
-}
-
-Boolean
+static Boolean
 UILabelConstructor(CFType self, va_list args)
 {
-    UILabelRef this = self;
+    UILabel this = self;
     const int x = va_arg(args, int);
     const int y = va_arg(args, int);
 	const char* text = va_arg(args, char*);
-    UIFontRef font = va_arg(args, UIFontRef);
+    UIFont font = va_arg(args, UIFont);
 
     this->x = x;
     this->y = y;
@@ -75,11 +59,58 @@ UILabelConstructor(CFType self, va_list args)
 	return true;
 }
 
-void 
+static void 
 UILabelFinalize(CFType self)
 {
-    UILabelRef this = self;
+    UILabel this = self;
     if (this->text != NULL) free(this->text);
     printf("UILabel::dtor\n");
+}
+
+CFTypeID
+UILabelGetTypeID (void)
+{
+  return _kUILabelTypeID;
+}
+
+void UILabelClassInitialize()
+{
+    static struct __CFClass __UILabelClass = {
+        .name = "UILabel",
+        .size = sizeof(struct __UILabel),
+        .ctor = UILabelConstructor,
+        .dtor = UILabelFinalize
+    };
+    CFClass UILabelClass = &__UILabelClass;
+	UILabelClass = &__UILabelClass;
+	_kUILabelTypeID = CFRegisterClass(UILabelClass);
+}
+
+
+UILabel
+UILabelCreate(int x, int y, char* text)
+{
+	return CFCreateObject(UILabelClass, x, y, text);
+}
+
+UILabel
+UILabelNew(int x, int y, char* text)
+{
+	return CFNewObject(UILabelClass, x, y, text);
+}
+
+void 
+UILabelSetText(UILabel this, char* text) {
+    this->text = text;
+}
+
+void 
+UILabelSetPos(UILabel this, int x, int y) {
+    this->x = x;
+    this->y = y;
+}
+
+void 
+UILabelDraw(UILabel this) {
 }
 

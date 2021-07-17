@@ -26,31 +26,26 @@
 ******************************************************************/
 #pragma once
 #include <CoreFX/CoreFX.h>
-#include "main.h"
-#include "helpers.h"
 #include "UITypes.h"
-#include "UIParams.h"
 #include "UIWindow.h"
+#include <getopt.h>
 
 
-// typedef struct UIWindowRef *UIWindowRef;
+typedef struct __UIApplication *UIApplication;
 
-typedef struct __UIApplication *UIApplicationRef;
-extern CFClass UIApplicationClass;
+extern UIApplication 
+UIApplicationCreate(int argc, char** argv, struct option* longopts);
 
-Boolean
-UIApplicationConstructor(CFType, va_list);
+extern UIApplication 
+UIApplicationNew(int argc, char** argv, struct option* longopts);
 
-void 
-UIApplicationFinalize(CFType);
 
-CFString
-UIApplicationGetCwd(UIApplicationRef this);
+extern CFString
+UIApplicationGetCwd(UIApplication this);
 
-// UIWindowRef
-CFType
-UIApplicationGetWindow(UIApplicationRef this);
+extern CFType
+UIApplicationGetWindow(UIApplication this);
 
-UIParamsRef
-UIApplicationGetParams(UIApplicationRef this);
+extern CFMap
+UIApplicationGetParams(UIApplication this);
 

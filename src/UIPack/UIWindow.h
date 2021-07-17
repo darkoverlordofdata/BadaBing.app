@@ -26,24 +26,35 @@
 ******************************************************************/
 #pragma once
 #include <CoreFX/CoreFX.h>
-#include "main.h"
-#include "helpers.h"
 #include "UIApplication.h"
 #include "UITypes.h"
+#import <Imlib2.h>
+#import <X11/Xlib.h>
+#import <X11/Xutil.h>
+#import <X11/xpm.h>
+#import <X11/extensions/dpms.h>
+#import <X11/keysym.h>
+#import <Xft/Xft.h>
 
-typedef struct __UIWindow *UIWindowRef;
-extern CFClass UIWindowClass;
+typedef struct __UIWindow *UIWindow;
 
-Boolean
-UIWindowConstructor(CFType, va_list);
+extern CFTypeID
+UIWindowGetTypeID (void);
 
-void 
-UIWindowFinalize(CFType);
+extern UIWindow
+UIWindowCreate();
 
-void 
-UIWindowShow(UIWindowRef);
+extern UIWindow
+UIWindowNew();
 
-void 
-UIWindowRun(UIWindowRef);
+extern void
+UIWindowDraw(UIWindow);
 
-// typedef struct UIApplicationRef UIApplicationRef;
+extern void 
+UIWindowShow(UIWindow);
+
+extern void 
+UIWindowRun(UIWindow);
+
+extern Boolean
+UIWindowCheckEvent(UIWindow, XEvent*, char*);

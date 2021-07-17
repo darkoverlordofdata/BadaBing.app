@@ -27,8 +27,6 @@
 
 #pragma once
 
-#include <unistd.h>
-
 #include "CFClass.h"
 #include "CFObject.h"
 #include "CFString.h"

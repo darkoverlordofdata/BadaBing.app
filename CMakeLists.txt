@@ -16,8 +16,8 @@ set ( RELEASE_NAME catlock )
 include ( CMakeToolsHelpers OPTIONAL )
 
 set(SOURCES
-    # src/main.c
-    src/tests.c
+    src/main.c
+    # src/tests.c
 )
 add_subdirectory( src/CoreFX )
 add_subdirectory( src/UIPack )
@@ -27,8 +27,6 @@ add_subdirectory( src/UIPack )
 #   application includes
 #
 set ( INCLUDES "${INCLUDES};src" )
-# set ( INCLUDES "${INCLUDES};src/CF" )
-set ( INCLUDES "${INCLUDES};src/UI" )
 
 set ( INCLUDES "${INCLUDES};/usr/local/include" )
 set ( INCLUDES "${INCLUDES};/usr/local/include/freetype2" )

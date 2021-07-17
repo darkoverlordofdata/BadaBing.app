@@ -24,6 +24,13 @@
 * POSSIBILITY OF SUCH DAMAGE.
 *
 ******************************************************************/
+#import <Imlib2.h>
+#import <X11/Xlib.h>
+#import <X11/Xutil.h>
+#import <X11/xpm.h>
+#import <X11/extensions/dpms.h>
+#import <X11/keysym.h>
+#import <Xft/Xft.h>
 #include "UIFont.h"
 
 
@@ -40,19 +47,13 @@ struct __UIFont
     int screen;
 };
 
-static struct __CFClass class = {
-	.name = "UIFont",
-	.size = sizeof(struct __UIFont),
-	.ctor = UIFontConstructor,
-	.dtor = UIFontFinalize
-};
-CFClass UIFontClass = &class;
+static CFTypeID _kUIFontTypeID = 0;
+static CFClass UIFontClass;
 
-
-Boolean
+static Boolean
 UIFontConstructor(CFType self, va_list args)
 {
-    UIFontRef this = self;
+    UIFont this = self;
 	const char* name = va_arg(args, char*);
 	const int size = va_arg(args, int);
 
@@ -61,11 +62,41 @@ UIFontConstructor(CFType self, va_list args)
 	return true;
 }
 
-void 
+static void 
 UIFontFinalize(CFType self)
 {
-    UIFontRef this = self;
+    UIFont this = self;
     if (this->name != NULL) free(this->name);
     printf("UIFont::dtor\n");
 }
 
+CFTypeID
+UIFontGetTypeID (void)
+{
+  return _kUIFontTypeID;
+}
+
+void UIFontClassInitialize()
+{
+    static struct __CFClass __UIFontClass = {
+        .name = "UIFont",
+        .size = sizeof(struct __UIFont),
+        .ctor = UIFontConstructor,
+        .dtor = UIFontFinalize
+    };
+	UIFontClass = &__UIFontClass;
+	_kUIFontTypeID = CFRegisterClass(UIFontClass);
+}
+
+
+extern UIFont 
+UIFontCreate(char* name, int size)
+{
+	return CFCreateObject(UIFontClass, name, size);
+}
+
+extern UIFont 
+UIFontNew(char* name, int size)
+{
+	return CFNewObject(UIFontClass, name, size);
+}

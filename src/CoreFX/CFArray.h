@@ -30,8 +30,6 @@
 
 typedef struct __CFArray *CFArray;
 
-extern CFClass CFArrayClass;
-
 extern CFArray 
 CFArrayCreate();
 

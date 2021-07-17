@@ -39,9 +39,11 @@ typedef struct UISize
     int height;
 } UISize;
 
-// typedef struct UIRect
-// {
-//     UIPoint;
-//     UISize;
-// } UIRect;
+typedef struct UIRect
+{
+    int x;
+    int y;
+    int width;
+    int height;
+} UIRect;
 

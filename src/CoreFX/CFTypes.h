@@ -101,8 +101,8 @@ extern CFTypeID CFUUIDTypeID;
 #define NO false
 
 
-#define CFCreate(T, args...) CFCreateObject(CFRegisterGet(T##GetTypeID()), ## args)
-#define CFNew(T, args...) CFNewObject(CFRegisterGet(T##GetTypeID()), ## args)
+// #define CFCreate(T, args...) CFCreateObject(CFRegisterGet(T##GetTypeID()), ## args)
+// #define CFNew(T, args...) CFNewObject(CFRegisterGet(T##GetTypeID()), ## args)
 /**
  *
  * Advanced Mode includes  type inference
