@@ -306,6 +306,9 @@ CFMapGet(CFMap this, CFType key)
 	if (key == NULL)
 		return NULL;
 
+	if (this->size<1)
+		return NULL;
+
 	hash = CFHash(key);
 	last = this->size;
 

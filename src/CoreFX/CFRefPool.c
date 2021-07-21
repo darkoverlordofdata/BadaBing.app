@@ -27,6 +27,7 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <stdio.h>
 
 #include "CFObject.h"
 #include "CFRefPool.h"
@@ -73,7 +74,10 @@ CFRefPoolFinalize(CFType self)
 		CFUnRef(this->next);
 
 	for (i = 0; i < this->size; i++)
+	{
+		// printf("CFRefPoolFinalize CFUnRef %li\n", i);
 		CFUnRef(this->data[i]);
+	}
 
 	if (this->data != NULL)
 		free(this->data);

@@ -25,6 +25,14 @@
 *
 ******************************************************************/
 #include "UILabel.h"
+#define NK_INCLUDE_FIXED_TYPES
+#define NK_INCLUDE_STANDARD_IO
+#define NK_INCLUDE_STANDARD_VARARGS
+#define NK_INCLUDE_DEFAULT_ALLOCATOR
+
+#include "nuklear.h"
+#include "nuklear_xlib.h"
+
 
 /**
  *	UILabel
@@ -32,39 +40,37 @@
 struct __UILabel 
 {
 	struct __CFObject obj;
-    int x;
-    int y;
-    char* text;
-    UIFont font;
+    UIWindow parent;
+    CFArray children;
+    NKContext ctx;
+    UIWidgetVtbl vtbl;
+
+    CFString text;
+    long format; //enum nk_text_alignment
 };
 
 static CFTypeID _kUILabelTypeID = 0;
 static CFClass UILabelClass;
 
-
+static struct __UIWidgetVtbl vtbl = {
+    // .Draw = (void(*)(void*))UILabelDraw
+    .Draw = UILabelDraw
+};
 
 static Boolean
 UILabelConstructor(CFType self, va_list args)
 {
     UILabel this = self;
-    const int x = va_arg(args, int);
-    const int y = va_arg(args, int);
-	const char* text = va_arg(args, char*);
-    UIFont font = va_arg(args, UIFont);
-
-    this->x = x;
-    this->y = y;
-    this->text = strdup(text);
-    this->font = font;
+    this->vtbl = &vtbl;
+    this->text = CFStringCreate(va_arg(args, char*));
+    this->format = va_arg(args, long);
 	return true;
 }
 
 static void 
 UILabelFinalize(CFType self)
 {
-    UILabel this = self;
-    if (this->text != NULL) free(this->text);
-    printf("UILabel::dtor\n");
+    CFLog("UILabel::dtor %s \n");
 }
 
 CFTypeID
@@ -81,36 +87,34 @@ void UILabelClassInitialize()
         .ctor = UILabelConstructor,
         .dtor = UILabelFinalize
     };
-    CFClass UILabelClass = &__UILabelClass;
 	UILabelClass = &__UILabelClass;
 	_kUILabelTypeID = CFRegisterClass(UILabelClass);
 }
 
-
 UILabel
-UILabelCreate(int x, int y, char* text)
+UILabelCreate(char* text, long format)
 {
-	return CFCreateObject(UILabelClass, x, y, text);
+	return CFCreateObject(UILabelClass, text, format);
 }
 
-UILabel
-UILabelNew(int x, int y, char* text)
+void
+UILabelDraw(void* self)
 {
-	return CFNewObject(UILabelClass, x, y, text);
+    UILabel this = self;
+    nk_layout_row_dynamic(this->ctx, 30, 3);
+    nk_label(this->ctx, CFStringC(this->text), this->format);
 }
 
-void 
-UILabelSetText(UILabel this, char* text) {
-    this->text = text;
+void
+UILabelParent(UILabel this, UIWindow parent, NKContext ctx)
+{
+    this->parent = parent;
+    this->ctx = UIWindownnNKCtx(parent);
 }
 
-void 
-UILabelSetPos(UILabel this, int x, int y) {
-    this->x = x;
-    this->y = y;
-}
 
-void 
-UILabelDraw(UILabel this) {
-}
 
+void
+UILabelRun(UILabel this)
+{
+}

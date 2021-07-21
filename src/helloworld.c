@@ -37,7 +37,7 @@
 
 #include "UIPack/nuklear.h"
 #include "UIPack/nuklear_xlib.h"
-#include "UIPack/style.c"
+// #include "UIPack/style.c"
 
 
 static struct option longopts[] = {
@@ -90,77 +90,12 @@ int main(int argc, char **argv)
 
     UIWindowShow(win);
     
-    __block char* answer;
-    __block Boolean popup_active  = false;
+    UILabel label1 = UILabelCreate("Label aligned left", NK_TEXT_LEFT);
 
-    var ctx = UIWindownnNKCtx(win);
+    UIWindowAdd(win, label1);
 
-    __block UILabel label1 = UILabelCreate(ctx);
-
-// setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
-// add(new Label("Hi There!"));
-// add(new Label("Another Label"));
-
-    UIWindowRun(win, NK_WINDOW_NO_SCROLLBAR, ^(NKContext ctx){
-
-        UIWindowStaticLayout(win, 30, 80, 1, ^(){
-            if (nk_button_label(ctx, "button")) {
-                popup_active = true;
-                fprintf(stdout, "button pressed\n");
-            }
-        });
-
-        UILabelDrawDynamic(label1, 30, 3, "Label aligned left");
-
-        UIWindowDynamicLayout(win, 20, 3, ^(){
-            enum {WHITE, DARK};
-            static int op = DARK;
-            if (nk_option_label(ctx, "white", op == WHITE)) {
-                set_style(ctx, THEME_WHITE);
-                op = WHITE;
-            }
-            if (nk_option_label(ctx, "dark", op == DARK)) {
-                set_style(ctx, THEME_DARK);
-                op = DARK;
-            }
-
-
-        });
-
-        UIWindowDynamicLayout(win, 25, 1, ^(){
-            static int property = 20;
-            nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
-        });
-
-        static const float ratio[] = {60, 150};
-        UIWindowRowLayout(win, NK_STATIC, 25, 2, ratio, ^(){
-            static char text[64];
-            static int text_len;
-
-            answer = &text[0];
-
-            nk_label(ctx, "Default:", NK_TEXT_LEFT);
-
-            nk_edit_string(ctx, NK_EDIT_SIMPLE, text, &text_len, 64, nk_filter_default);
-
-        });
-
-        popup_active = UIWindowPopup(win, popup_active, "Error", 20, 100, 220, 90, ^Boolean(Boolean active){
-            Boolean result = active;
-            nk_label(ctx, answer, NK_TEXT_LEFT);
-            nk_layout_row_dynamic(ctx, 25, 2);
-            if (nk_button_label(ctx, "OK")) {
-                result = false;
-                nk_popup_close(ctx);
-            }
-            if (nk_button_label(ctx, "Cancel")) {
-                result = false;
-                nk_popup_close(ctx);
-            }
-            return result;
-        });
-
-    });
+    UIWindowRun(win, NK_WINDOW_NO_SCROLLBAR);
+    
 	CFUnRef(pool);
     return 0;
     

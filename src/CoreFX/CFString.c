@@ -25,6 +25,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
@@ -148,7 +149,6 @@ void
 CFStringFinalize(CFType self)
 {
 	CFString this = self;
-
 	if (this->data != NULL)
 		free(this->data);
 }

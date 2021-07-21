@@ -38,6 +38,9 @@
 
 typedef struct __UIWindow *UIWindow;
 
+typedef struct nk_context *NKContext;
+
+
 extern CFTypeID
 UIWindowGetTypeID (void);
 
@@ -47,14 +50,64 @@ UIWindowCreate();
 extern UIWindow
 UIWindowNew();
 
+extern CFString
+UIWindowTitle(UIWindow);
+
+extern NKContext
+UIWindownnNKCtx(UIWindow);
+
+extern int
+UIWindowX(UIWindow);
+
+extern int
+UIWindowY(UIWindow);
+
+extern int
+UIWindowWidth(UIWindow);
+
+extern int
+UIWindowHeight(UIWindow);
+
 extern void
-UIWindowDraw(UIWindow);
+UIWindowDraw(void*);
 
 extern void 
 UIWindowShow(UIWindow);
 
-extern void 
-UIWindowRun(UIWindow);
+extern void
+UIWindowAdd(UIWindow, CFType);
 
-extern Boolean
-UIWindowCheckEvent(UIWindow, XEvent*, char*);
+extern void
+UIWindowRun(UIWindow this, long panelFlag);
+
+typedef struct __UIWidget *UIWidget;
+
+struct __UIWidgetVtbl
+{
+    void(*Draw)(void*);
+};
+typedef struct __UIWidgetVtbl *UIWidgetVtbl;
+
+/**
+ * Widget interface:
+ *
+ *  UILabel
+ *  UIButton
+ *  UIText
+ *  UIWindow
+ *
+ */
+struct __UIWidget
+{
+	struct __CFObject obj;
+    UIWindow parent;
+    CFArray children;
+    NKContext ctx;
+    UIWidgetVtbl vtbl;
+};
+
+
+
+
+extern void
+UIWidgetParent(UIWidget, UIWindow, NKContext);

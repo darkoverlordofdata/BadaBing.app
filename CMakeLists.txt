@@ -16,7 +16,8 @@ set ( RELEASE_NAME catlock )
 include ( CMakeToolsHelpers OPTIONAL )
 
 set(SOURCES
-    src/main.c
+    src/helloworld.c
+    # src/main.c
     # src/tests.c
 )
 add_subdirectory( src/CoreFX )
@@ -35,7 +36,7 @@ set ( INCLUDES "${INCLUDES};/usr/include" )
 set ( INCLUDES "${INCLUDES};/usr/include/freetype2" )
 set ( INCLUDES "${INCLUDES};/usr/include/X11" )
 
-
+set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DNK_XLIB_USE_XFT" )
 set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__CoreFX_Advanced_Mode__" )
 set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Os -std=c18" )
 set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fblocks" )
@@ -53,7 +54,7 @@ add_custom_command ( TARGET ${PROJECT_NAME}
                    POST_BUILD COMMAND 
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> .. )
                                       
-target_link_libraries ( ${PROJECT_NAME} c BlocksRuntime X11 Xext Xpm Imlib2 Xft crypt  )
+target_link_libraries ( ${PROJECT_NAME}  c BlocksRuntime X11 Xft  )
 # target_link_libraries ( ${PROJECT_NAME} c  )
 install ( TARGETS ${PROJECT_NAME} RUNTIME DESTINATION . )
 

@@ -26,6 +26,7 @@
  */
 
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
@@ -189,7 +190,7 @@ CFUnRef(CFType self)
 
 	if (this == NULL)
 		return;
-
+	// printf("%s %i\n",  this->cls->name, this->ref_cnt);
 	if (--this->ref_cnt == 0)
 		CFFree(this);
 }

@@ -26,18 +26,24 @@
 ******************************************************************/
 #pragma once
 #include <CoreFX/CoreFX.h>
-#include "UIFont.h"
+#include "UIWindow.h"
 #include "UITypes.h"
 
 typedef struct __UILabel *UILabel;
 
+typedef struct nk_context *NKContext;
 
-void 
-UILabelSetText(UILabel, char*);
+extern UILabel
+UILabelCreate(char*, long);
 
-void 
-UILabelSetPos(UILabel, int , int );
+extern UILabel
+UILabelNew(char*, long);
 
-void 
-UILabelDraw(UILabel);
+extern void
+UILabelDraw(void*);
 
+extern void
+UILabelParent(UILabel, UIWindow, NKContext);
+
+extern void 
+UILabelRun(UILabel);
